@@ -1,0 +1,14 @@
+# Ignorar arquivos de configuração e ambiente e sensíveis
+/config/database.php
+.env
+
+# Logs e arquivos temporários
+*.log
+error_log
+.DS_Store
+Thumbs.db
+
+# IDEs e editores
+.vscode/
+.idea/
+*.swp
