@@ -9,7 +9,7 @@ define('APP_ENV', $isLocal ? 'local' : 'production');
 
 if (APP_ENV === 'local') {
     // Em ambiente local (xampp, wamp e outros), a aplicação ainda deverá abrir a pasta do projeto.
-    define('BASE_URL', '/aplicWebAv2/public');
+    define('BASE_URL', '/AtlasJornal/public');
 } else {
     // Em produção, o .htaccess já irá abrir a aplicação em public/
     define('BASE_URL', '');

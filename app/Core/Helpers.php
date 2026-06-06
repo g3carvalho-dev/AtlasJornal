@@ -1,7 +1,5 @@
 <?php
 
-namespace App\Core;
-
 function url(string $path = '')
 {
     $baseUrl = rtrim(BASE_URL, '/');
