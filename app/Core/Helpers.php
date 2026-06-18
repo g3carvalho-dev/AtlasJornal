@@ -16,3 +16,8 @@ function e(?string $string)
 {
     return htmlspecialchars($string ?? '', ENT_QUOTES, 'UTF-8');
 }
+
+function format_date(?DateTime $date, string $format = 'd/m/Y H:i'): string
+{
+    return $date ? $date->format($format) : '';
+}

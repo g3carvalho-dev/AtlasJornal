@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>Jornal Atlas</title>
+    <title><?= e($noticia->getTitulo()) ;?> - Jornal Atlas</title>
 
     <link rel="stylesheet" href="<?= asset('css/style.css') ;?>">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
@@ -17,163 +17,120 @@
 <body>
 
     <!-- TOPO -->
-
     <div class="topbar">
-
         <div class="topbar-left" id="data-atual"></div>
-
         <div class="topbar-right">
-
             <a href="#">Sobre nós</a>
             <a href="#">Anuncie</a>
             <a href="#">Contato</a>
-
             <div class="social-icons">
-
-                <a href="#" aria-label="Facebook">
-                    <i class="fa-brands fa-facebook-f"></i>
-                </a>
-
-                <a href="#" aria-label="Instagram">
-                    <i class="fa-brands fa-instagram"></i>
-                </a>
-
-                <a href="#" aria-label="Twitter">
-                    <i class="fa-brands fa-x-twitter"></i>
-                </a>
-
-                <a href="#" aria-label="YouTube">
-                    <i class="fa-brands fa-youtube"></i>
-                </a>
-
+                <a href="#" aria-label="Facebook"><i class="fa-brands fa-facebook-f"></i></a>
+                <a href="#" aria-label="Instagram"><i class="fa-brands fa-instagram"></i></a>
+                <a href="#" aria-label="Twitter"><i class="fa-brands fa-x-twitter"></i></a>
+                <a href="#" aria-label="YouTube"><i class="fa-brands fa-youtube"></i></a>
             </div>
-
         </div>
-
     </div>
 
     <!-- HEADER -->
-
     <header>
-
         <div class="search-box">
             <i class="fa-solid fa-magnifying-glass"></i>
             <input type="text" placeholder="Buscar notícias...">
         </div>
-
         <div class="logo">
-            <img src="<?= asset('img/atlas.png') ;?>" alt="Jornal Atlas">
+            <a href="<?= url('/') ;?>"><img src="<?= asset('img/atlas.png') ;?>" alt="Jornal Atlas"></a>
         </div>
-
         <div class="header-buttons">
             <a href="<?= url('/login') ;?>" class="btn-login">Entrar</a>
             <a href="<?= url('/cadastro') ;?>" class="btn-cadastro">Cadastrar</a>
         </div>
-
     </header>
 
     <!-- MENU -->
-
     <nav>
-
         <ul>
-
             <li><a href="#">Política</a></li>
             <li><a href="#">Tecnologia</a></li>
             <li><a href="#">Economia</a></li>
             <li><a href="#">Esportes</a></li>
             <li><a href="#">Mundo</a></li>
             <li><a href="#">Cultura</a></li>
-
         </ul>
-
     </nav>
 
-    <!-- DESTAQUE -->
+    <!-- CONTEUDO DA NOTICIA -->
+    <main class="noticia-pagina">
 
-    <section class="hero">
-        <div class="hero-carousel">
+        <div class="noticia-container">
 
-            <?php foreach ($hero as $i => $noticia): ?>
-            <article class="carousel-slide <?= $i === 0 ? 'active' : '' ;?>">
-                <div class="hero-image">
+            <a href="<?= url('/') ;?>" class="noticia-voltar">
+                <i class="fa-solid fa-arrow-left"></i> Voltar para a Home
+            </a>
+
+            <article class="noticia-conteudo">
+
+                <span class="noticia-categoria"><?= e($noticia->getCategoria()) ;?></span>
+
+                <h1 class="noticia-titulo"><?= e($noticia->getTitulo()) ;?></h1>
+
+                <div class="noticia-meta">
+                    <span class="noticia-data">
+                        <i class="fa-regular fa-calendar"></i>
+                        Publicado em <?= format_date($noticia->getDataPublicacao(), 'd/m/Y \à\s H:i') ;?>
+                    </span>
+                    <?php if ($noticia->getDataEdicao()): ?>
+                    <span class="noticia-data">
+                        <i class="fa-regular fa-pen-to-square"></i>
+                        Atualizado em <?= format_date($noticia->getDataEdicao(), 'd/m/Y \à\s H:i') ;?>
+                    </span>
+                    <?php endif; ?>
+                </div>
+
+                <?php if ($noticia->getImagem()): ?>
+                <div class="noticia-imagem-principal">
                     <img src="<?= asset('img/' . $noticia->getImagem()) ;?>" alt="<?= e($noticia->getTitulo()) ;?>">
                 </div>
-                <div class="hero-content">
-                    <span class="categoria"><?= e($noticia->getCategoria()) ;?></span>
-                    <h1><?= e($noticia->getTitulo()) ;?></h1>
-                    <p><?= e($noticia->getResumo()) ;?></p>
-                    <a href="<?= url('/noticia/' . $noticia->getId()) ?>" class="btn-materia">LER MATÉRIA COMPLETA</a>
+                <?php endif; ?>
+
+                <div class="noticia-resumo">
+                    <?= e($noticia->getResumo()) ;?>
                 </div>
+
+                <div class="noticia-texto">
+                    <?= nl2br(e($noticia->getConteudo())) ;?>
+                </div>
+
             </article>
-            <?php endforeach; ?>
 
         </div>
 
-        <div class="carousel-controls">
-            <div class="carousel-indicators">
-                <?php foreach ($hero as $i => $noticia): ?>
-                <span class="dot <?= $i === 0 ? 'active' : '' ;?>" onclick="currentSlide(<?= $i ;?>)"
-                    aria-label="Acessar slide <?= $i + 1 ;?>"></span>
-                <?php endforeach; ?>
-            </div>
+    </main>
 
-            <div class="carousel-navigation">
-                <button class="prev-btn" onclick="changeSlide(-1)" aria-label="Slide Anterior">
-                    <i class="fa-solid fa-arrow-left"></i>
-                </button>
-                <button class="next-btn" onclick="changeSlide(1)" aria-label="Próximo Slide">
-                    <i class="fa-solid fa-arrow-right"></i>
-                </button>
-            </div>
-        </div>
-    </section>
+    <!-- RELACIONADAS -->
+    <?php
+$relacionadasFiltradas = array_filter($relacionadas, fn($r) => $r->getId() !== $noticia->getId());
+$relacionadasFiltradas = array_slice($relacionadasFiltradas, 0, 3);
+?>
 
-    <!-- NACIONAL -->
-
+    <?php if (count($relacionadasFiltradas) > 0): ?>
     <section class="secao">
-
-        <h2>Nacional</h2>
-
+        <h2>Mais notícias</h2>
         <div class="cards">
-
-            <?php foreach ($nacional as $noticia): ?>
-            <a href="<?= url('/noticia/' . $noticia->getId()) ?>" class="card card-link">
-                <img src="<?= asset('img/' . $noticia->getImagem()) ;?>" alt="<?= e($noticia->getTitulo()) ;?>">
-                <h3><?= e($noticia->getTitulo()) ;?></h3>
-                <p><?= e($noticia->getResumo()) ;?></p>
+            <?php foreach ($relacionadasFiltradas as $rel): ?>
+            <a href="<?= url('/noticia/' . $rel->getId()) ;?>" class="card card-link">
+                <img src="<?= asset('img/' . $rel->getImagem()) ;?>" alt="<?= e($rel->getTitulo()) ;?>">
+                <h3><?= e($rel->getTitulo()) ;?></h3>
+                <p><?= e($rel->getResumo()) ;?></p>
             </a>
             <?php endforeach; ?>
-
         </div>
-
     </section>
-
-    <!-- INTERNACIONAL -->
-
-    <section class="secao">
-
-        <h2>Internacional</h2>
-
-        <div class="cards">
-
-            <?php foreach ($internacional as $noticia): ?>
-            <a href="<?= url('/noticia/' . $noticia->getId()) ?>" class="card card-link">
-                <img src="<?= asset('img/' . $noticia->getImagem()) ;?>" alt="<?= e($noticia->getTitulo()) ;?>">
-                <h3><?= e($noticia->getTitulo()) ;?></h3>
-                <p><?= e($noticia->getResumo()) ;?></p>
-            </a>
-            <?php endforeach; ?>
-
-        </div>
-
-    </section>
+    <?php endif; ?>
 
     <!-- FOOTER -->
-
     <footer>
         <div class="footer-container">
-
             <div class="footer-brand">
                 <div class="footer-logo">
                     <img src="<?= asset('img/atlas.png') ;?>" alt="Jornal Atlas">
@@ -221,7 +178,6 @@
                     <button type="submit" aria-label="Enviar"><i class="fa-solid fa-paper-plane"></i></button>
                 </form>
             </div>
-
         </div>
 
         <div class="footer-bottom">
@@ -230,7 +186,6 @@
     </footer>
 
     <!-- SCRIPT -->
-    <script src="<?= asset('js/script.js') ;?>"></script>
     <script>
     const data = new Date();
     const diasSemana = ["Domingo", "Segunda-feira", "Terça-feira", "Quarta-feira", "Quinta-feira", "Sexta-feira",
