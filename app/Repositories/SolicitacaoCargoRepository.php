@@ -46,6 +46,40 @@ class SolicitacaoCargoRepository
         return $lista;
     }
 
+    public static function allWithUser(): array
+    {
+        $stmt = Database::getConnection()->query(
+            'SELECT sc.*, u.nome AS usuario_nome, u.email AS usuario_email, u.foto AS usuario_foto,
+                    u.podeRedigir, u.podeRevisar, u.isAdmin
+             FROM SolicitacaoCargo sc
+             JOIN Usuario u ON sc.usuario_id = u.id
+             ORDER BY sc.dataSolicitacao DESC'
+        );
+        return $stmt->fetchAll();
+    }
+
+    public static function stats(): array
+    {
+        $pendentes = (int) Database::getConnection()->query(
+            'SELECT COUNT(*) FROM SolicitacaoCargo WHERE status = \'' . StatusSolicitacao::ANALISE->value . '\''
+        )->fetchColumn();
+
+        $aprovadas = (int) Database::getConnection()->query(
+            'SELECT COUNT(*) FROM SolicitacaoCargo WHERE status = \'' . StatusSolicitacao::APROVADA->value . '\''
+        )->fetchColumn();
+
+        $rejeitadas = (int) Database::getConnection()->query(
+            'SELECT COUNT(*) FROM SolicitacaoCargo WHERE status = \'' . StatusSolicitacao::REJEITADA->value . '\''
+        )->fetchColumn();
+
+        return [
+            'pendentes' => $pendentes,
+            'aprovadas' => $aprovadas,
+            'rejeitadas' => $rejeitadas,
+            'total' => $pendentes + $aprovadas + $rejeitadas,
+        ];
+    }
+
     public static function byUsuario(int $usuarioId): array
     {
         $stmt = Database::getConnection()->prepare(
@@ -91,7 +125,7 @@ class SolicitacaoCargoRepository
         return new SolicitacaoCargo(
             (int) $row['id'],
             (int) $row['usuario_id'],
-            (int) $row['admin_id'] ?? 0,
+            (int) ($row['admin_id'] ?? 0),
             CargoSolicitado::from($row['cargo']),
             StatusSolicitacao::from($row['status']),
             new DateTime($row['dataSolicitacao']),

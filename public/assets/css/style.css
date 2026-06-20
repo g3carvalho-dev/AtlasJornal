@@ -1992,3 +1992,828 @@ footer {
         display: none;
     }
 }
+
+/* ======================================================
+   REVISÃO - Página de Revisão de Notícias
+   ====================================================== */
+.revisao-pagina {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 30px 5% 60px;
+}
+
+.revisao-header {
+    margin-bottom: 24px;
+}
+
+.revisao-header h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: 28px;
+    color: var(--azul);
+    margin: 0 0 4px;
+}
+
+.revisao-header p {
+    color: #777;
+    font-size: 14px;
+    margin: 0;
+}
+
+.revisao-aviso {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    background: #fff8e1;
+    border: 1px solid #ffe082;
+    border-radius: 8px;
+    padding: 12px 16px;
+    margin-top: 16px;
+}
+
+.revisao-aviso i {
+    color: #f9a825;
+    font-size: 18px;
+    margin-top: 2px;
+}
+
+.revisao-aviso strong {
+    display: block;
+    font-size: 13px;
+    color: #5d4037;
+}
+
+.revisao-aviso span {
+    font-size: 12px;
+    color: #8d6e63;
+}
+
+.alert-sucesso {
+    background: #e8f5e9;
+    color: #2e7d32;
+    border: 1px solid #a5d6a7;
+    border-radius: 8px;
+    padding: 12px 16px;
+    margin-bottom: 20px;
+    font-size: 14px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.revisao-layout {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 24px;
+    align-items: start;
+}
+
+.revisao-lista {
+    background: white;
+    border-radius: 12px;
+    border: 1px solid #eee;
+    overflow: hidden;
+}
+
+.revisao-stats-bar {
+    padding: 12px 16px;
+    border-bottom: 1px solid #f0f0f0;
+    display: flex;
+    gap: 16px;
+}
+
+.rev-stat {
+    font-size: 13px;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.rev-stat.pendente {
+    color: #f57c00;
+}
+
+.revisao-tabela {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.revisao-tabela thead th {
+    text-align: left;
+    font-size: 11px;
+    font-weight: 700;
+    color: #999;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    padding: 12px 16px;
+    border-bottom: 2px solid #f0f0f0;
+}
+
+.revisao-tabela tbody tr {
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.revisao-tabela tbody tr:hover {
+    background: #fafafa;
+}
+
+.revisao-tabela tbody tr.selecionada {
+    background: #fff8e1;
+}
+
+.revisao-tabela tbody td {
+    padding: 14px 16px;
+    font-size: 13px;
+    color: #333;
+    border-bottom: 1px solid #f5f5f5;
+    vertical-align: middle;
+}
+
+.td-titulo {
+    font-weight: 600;
+    color: var(--azul);
+    max-width: 200px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.status-badge-status {
+    display: inline-block;
+    padding: 4px 10px;
+    border-radius: 20px;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+}
+
+.status-em-analise {
+    background: #fff3e0;
+    color: #e65100;
+}
+
+.revisao-vazio {
+    text-align: center;
+    padding: 60px 20px;
+    color: #bbb;
+}
+
+.revisao-vazio i {
+    font-size: 40px;
+    margin-bottom: 12px;
+    display: block;
+}
+
+.revisao-preview {
+    background: white;
+    border-radius: 12px;
+    border: 1px solid #eee;
+    padding: 24px;
+    position: sticky;
+    top: 20px;
+}
+
+.preview-cabecalho > div {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 16px;
+}
+
+.preview-categoria {
+    background: var(--dourado);
+    color: var(--azul);
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+}
+
+.preview-status-badge {
+    background: #fff3e0;
+    color: #e65100;
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+}
+
+.preview-titulo {
+    font-family: 'Playfair Display', serif;
+    font-size: 22px;
+    color: var(--azul);
+    margin: 0 0 8px;
+    line-height: 1.3;
+}
+
+.preview-meta {
+    font-size: 13px;
+    color: #888;
+    margin: 0 0 16px;
+}
+
+.preview-meta i {
+    margin-right: 4px;
+}
+
+.preview-imagem {
+    margin-bottom: 16px;
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+.preview-imagem img {
+    width: 100%;
+    height: 200px;
+    object-fit: cover;
+    display: block;
+}
+
+.preview-resumo {
+    background: #f8f9fa;
+    border-left: 3px solid var(--dourado);
+    padding: 12px 16px;
+    margin-bottom: 16px;
+    border-radius: 0 6px 6px 0;
+}
+
+.preview-resumo p {
+    font-size: 14px;
+    color: #555;
+    margin: 0;
+    font-style: italic;
+}
+
+.preview-conteudo {
+    font-size: 14px;
+    line-height: 1.7;
+    color: #444;
+    margin-bottom: 24px;
+    max-height: 300px;
+    overflow-y: auto;
+}
+
+.revisao-form {
+    border-top: 1px solid #eee;
+    padding-top: 20px;
+}
+
+.revisao-observacao label {
+    display: block;
+    font-size: 13px;
+    font-weight: 600;
+    color: #555;
+    margin-bottom: 6px;
+}
+
+.revisao-observacao .opcional {
+    font-weight: 400;
+    color: #aaa;
+}
+
+.revisao-observacao textarea {
+    width: 100%;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    padding: 10px 12px;
+    font-size: 13px;
+    font-family: 'Inter', sans-serif;
+    resize: vertical;
+    min-height: 60px;
+    margin-bottom: 4px;
+}
+
+.revisao-observacao textarea:focus {
+    outline: none;
+    border-color: var(--dourado);
+}
+
+.revisao-observacao small {
+    font-size: 11px;
+    color: #aaa;
+}
+
+.revisao-botoes {
+    display: flex;
+    gap: 8px;
+    margin-top: 16px;
+    flex-wrap: wrap;
+}
+
+.btn-rev {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 10px 16px;
+    border-radius: 6px;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    text-decoration: none;
+    cursor: pointer;
+    border: none;
+    transition: 0.3s;
+}
+
+.btn-rev.btn-aprovar {
+    background: #27ae60;
+    color: white;
+}
+
+.btn-rev.btn-aprovar:hover {
+    background: #219a52;
+}
+
+.btn-rev.btn-rejeitar {
+    background: #e74c3c;
+    color: white;
+}
+
+.btn-rev.btn-rejeitar:hover {
+    background: #c0392b;
+}
+
+.btn-rev.btn-arquivar {
+    background: #95a5a6;
+    color: white;
+}
+
+.btn-rev.btn-arquivar:hover {
+    background: #7f8c8d;
+}
+
+.btn-rev.btn-editar {
+    background: transparent;
+    color: var(--dourado);
+    border: 1px solid var(--dourado);
+}
+
+.btn-rev.btn-editar:hover {
+    background: var(--dourado);
+    color: var(--azul);
+}
+
+.preview-vazio {
+    text-align: center;
+    padding: 80px 20px;
+    color: #ccc;
+}
+
+.preview-vazio i {
+    font-size: 48px;
+    margin-bottom: 12px;
+    display: block;
+}
+
+/* ======================================================
+   SOLICITAÇÕES - Página de Solicitações de Cargo
+   ====================================================== */
+.solicitacao-pagina {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 30px 5% 60px;
+}
+
+.breadcrumb {
+    font-size: 13px;
+    color: #999;
+    margin-bottom: 16px;
+}
+
+.breadcrumb a {
+    color: #777;
+    text-decoration: none;
+}
+
+.breadcrumb a:hover {
+    color: var(--dourado);
+}
+
+.breadcrumb .atual {
+    color: var(--azul);
+    font-weight: 600;
+}
+
+.solicitacao-header {
+    margin-bottom: 24px;
+}
+
+.solicitacao-header h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: 28px;
+    color: var(--azul);
+    margin: 0 0 4px;
+}
+
+.solicitacao-header p {
+    color: #777;
+    font-size: 14px;
+    margin: 0;
+}
+
+.solicitacao-stats {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 16px;
+    margin-bottom: 24px;
+}
+
+.sol-stat-card {
+    background: white;
+    border: 1px solid #eee;
+    border-radius: 10px;
+    padding: 18px 20px;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+}
+
+.sol-stat-icon {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 20px;
+}
+
+.sol-stat-card.pendente .sol-stat-icon {
+    background: #fff3e0;
+    color: #f57c00;
+}
+
+.sol-stat-card.aprovada .sol-stat-icon {
+    background: #e8f5e9;
+    color: #27ae60;
+}
+
+.sol-stat-card.rejeitada .sol-stat-icon {
+    background: #fce4ec;
+    color: #e74c3c;
+}
+
+.sol-stat-card.total .sol-stat-icon {
+    background: #e3f2fd;
+    color: var(--azul);
+}
+
+.sol-stat-numero {
+    display: block;
+    font-size: 26px;
+    font-weight: 700;
+    color: var(--azul);
+    line-height: 1;
+}
+
+.sol-stat-label {
+    display: block;
+    font-size: 11px;
+    font-weight: 600;
+    color: #999;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    margin-top: 2px;
+}
+
+.solicitacao-layout {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 24px;
+    align-items: start;
+}
+
+.solicitacao-lista {
+    background: white;
+    border-radius: 12px;
+    border: 1px solid #eee;
+    overflow: hidden;
+}
+
+.solicitacao-vazio {
+    text-align: center;
+    padding: 60px 20px;
+    color: #bbb;
+}
+
+.solicitacao-vazio i {
+    font-size: 40px;
+    margin-bottom: 12px;
+    display: block;
+}
+
+.solicitacao-tabela {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.solicitacao-tabela thead th {
+    text-align: left;
+    font-size: 11px;
+    font-weight: 700;
+    color: #999;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    padding: 12px 14px;
+    border-bottom: 2px solid #f0f0f0;
+}
+
+.solicitacao-tabela tbody tr {
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.solicitacao-tabela tbody tr:hover {
+    background: #fafafa;
+}
+
+.solicitacao-tabela tbody tr.selecionada {
+    background: #fff8e1;
+}
+
+.solicitacao-tabela tbody tr.resolvida {
+    opacity: 0.6;
+}
+
+.solicitacao-tabela tbody td {
+    padding: 12px 14px;
+    font-size: 13px;
+    color: #333;
+    border-bottom: 1px solid #f5f5f5;
+    vertical-align: middle;
+}
+
+.td-usuario {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-weight: 600;
+}
+
+.sol-user-thumb {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+.cargo-badge {
+    display: inline-block;
+    padding: 3px 10px;
+    border-radius: 20px;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+}
+
+.cargo-leitor {
+    background: #f5f5f5;
+    color: #888;
+}
+
+.cargo-redator {
+    background: #e3f2fd;
+    color: #1565c0;
+}
+
+.cargo-revisor {
+    background: #fff8e1;
+    color: #f57f17;
+}
+
+.cargo-administrador, .cargo-admin {
+    background: #fce4ec;
+    color: #c62828;
+}
+
+.sol-status-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    padding: 4px 10px;
+    border-radius: 20px;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+}
+
+.sol-pendente {
+    background: #fff3e0;
+    color: #e65100;
+}
+
+.sol-aprovada {
+    background: #e8f5e9;
+    color: #2e7d32;
+}
+
+.sol-rejeitada {
+    background: #fce4ec;
+    color: #c62828;
+}
+
+.sol-btn-detalhes {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    border-radius: 6px;
+    color: var(--dourado);
+    border: 1px solid rgba(228, 181, 113, 0.3);
+    background: rgba(228, 181, 113, 0.1);
+    text-decoration: none;
+    transition: 0.3s;
+}
+
+.sol-btn-detalhes:hover {
+    background: var(--dourado);
+    color: var(--azul);
+}
+
+.sol-btn-detalhes.disabled {
+    opacity: 0.3;
+    pointer-events: none;
+}
+
+.solicitacao-preview {
+    background: white;
+    border-radius: 12px;
+    border: 1px solid #eee;
+    padding: 24px;
+    position: sticky;
+    top: 20px;
+}
+
+.preview-perfil {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding-bottom: 20px;
+    border-bottom: 1px solid #f0f0f0;
+    margin-bottom: 20px;
+}
+
+.preview-avatar {
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid var(--dourado);
+}
+
+.preview-perfil-nome {
+    display: block;
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--azul);
+}
+
+.preview-perfil-email {
+    display: block;
+    font-size: 13px;
+    color: #888;
+}
+
+.preview-campos {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    margin-bottom: 20px;
+}
+
+.preview-campo label {
+    display: block;
+    font-size: 11px;
+    font-weight: 700;
+    color: #999;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    margin-bottom: 4px;
+}
+
+.preview-campo span {
+    font-size: 14px;
+    color: #333;
+}
+
+.preview-resolvido {
+    border-top: 1px solid #f0f0f0;
+    padding-top: 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+}
+
+.preview-observacao {
+    font-size: 13px;
+    color: #555;
+    line-height: 1.5;
+    background: #f8f9fa;
+    padding: 10px 14px;
+    border-radius: 6px;
+    margin: 0;
+}
+
+.solicitacao-form {
+    border-top: 1px solid #f0f0f0;
+    padding-top: 20px;
+}
+
+.sol-observacao label {
+    display: block;
+    font-size: 13px;
+    font-weight: 600;
+    color: #555;
+    margin-bottom: 6px;
+}
+
+.sol-observacao .opcional {
+    font-weight: 400;
+    color: #aaa;
+}
+
+.sol-observacao textarea {
+    width: 100%;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    padding: 10px 12px;
+    font-size: 13px;
+    font-family: 'Inter', sans-serif;
+    resize: vertical;
+    min-height: 60px;
+}
+
+.sol-observacao textarea:focus {
+    outline: none;
+    border-color: var(--dourado);
+}
+
+.sol-botoes {
+    display: flex;
+    gap: 10px;
+    margin-top: 16px;
+}
+
+.sol-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 10px 20px;
+    border-radius: 6px;
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    cursor: pointer;
+    border: none;
+    transition: 0.3s;
+}
+
+.sol-btn-aprovar {
+    background: #27ae60;
+    color: white;
+}
+
+.sol-btn-aprovar:hover {
+    background: #219a52;
+}
+
+.sol-btn-rejeitar {
+    background: #e74c3c;
+    color: white;
+}
+
+.sol-btn-rejeitar:hover {
+    background: #c0392b;
+}
+
+@media (max-width: 1024px) {
+    .revisao-layout,
+    .solicitacao-layout {
+        grid-template-columns: 1fr;
+    }
+
+    .solicitacao-stats {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 768px) {
+    .solicitacao-stats {
+        grid-template-columns: 1fr;
+    }
+
+    .revisao-botoes,
+    .sol-botoes {
+        flex-direction: column;
+    }
+
+    .revisao-botoes .btn-rev,
+    .sol-botoes .sol-btn {
+        width: 100%;
+        justify-content: center;
+    }
+}

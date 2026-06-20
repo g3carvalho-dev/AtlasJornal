@@ -4,8 +4,11 @@ namespace App\Core;
 
 use App\Controllers\AuthController;
 use App\Controllers\CategoryController;
+use App\Controllers\DashboardController;
 use App\Controllers\HomeController;
 use App\Controllers\NoticiaController;
+use App\Controllers\RevisaoController;
+use App\Controllers\SolicitacaoController;
 
 class App
 {
@@ -88,13 +91,27 @@ class App
             case 'revisao':
                 require_once __DIR__ . '/../Controllers/RevisaoController.php';
                 $controller = new RevisaoController();
-                $controller->index();
+                if (($segments[1] ?? '') === 'aprovar' && ($segments[2] ?? '')) {
+                    $controller->aprovar($segments[2]);
+                } elseif (($segments[1] ?? '') === 'rejeitar' && ($segments[2] ?? '')) {
+                    $controller->rejeitar($segments[2]);
+                } elseif (($segments[1] ?? '') === 'arquivar' && ($segments[2] ?? '')) {
+                    $controller->arquivar($segments[2]);
+                } else {
+                    $controller->index();
+                }
                 break;
 
             case 'solicitacoes':
                 require_once __DIR__ . '/../Controllers/SolicitacaoController.php';
                 $controller = new SolicitacaoController();
-                $controller->index();
+                if (($segments[1] ?? '') === 'aprovar' && ($segments[2] ?? '')) {
+                    $controller->aprovar($segments[2]);
+                } elseif (($segments[1] ?? '') === 'rejeitar' && ($segments[2] ?? '')) {
+                    $controller->rejeitar($segments[2]);
+                } else {
+                    $controller->index();
+                }
                 break;
 
             case 'dashboard':
