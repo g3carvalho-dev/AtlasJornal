@@ -13,6 +13,7 @@ class Usuario
     private string $assinatura;
     private string $email;
     private string $senha;
+    private ?string $foto;
     private bool $podeRedigir;
     private bool $podeRevisar;
     private bool $isAdmin;
@@ -25,6 +26,7 @@ class Usuario
         string $assinatura,
         string $email,
         string $senha,
+        ?string $foto = null,
         bool $podeRedigir = false,
         bool $podeRevisar = false,
         bool $isAdmin = false
@@ -36,12 +38,12 @@ class Usuario
         $this->assinatura = $assinatura;
         $this->email = $email;
         $this->senha = $senha;
+        $this->foto = $foto;
         $this->podeRedigir = $podeRedigir;
         $this->podeRevisar = $podeRevisar;
         $this->isAdmin = $isAdmin;
     }
 
-    // Getters
     public function getId(): int
     {
         return $this->id;
@@ -72,10 +74,14 @@ class Usuario
         return $this->email;
     }
 
-    // returns hashed password
     public function getSenha(): string
     {
         return $this->senha;
+    }
+
+    public function getFoto(): string
+    {
+        return $this->foto ?? 'img/avatar_admin.png';
     }
 
     public function getPodeRedigir(): bool
@@ -93,7 +99,14 @@ class Usuario
         return $this->isAdmin;
     }
 
-    // Setters
+    public function getCargo(): string
+    {
+        if ($this->isAdmin) return 'administrador';
+        if ($this->podeRevisar) return 'revisor';
+        if ($this->podeRedigir) return 'redator';
+        return 'leitor';
+    }
+
     public function setId(int $id): void
     {
         $this->id = $id;
@@ -124,10 +137,14 @@ class Usuario
         $this->email = $email;
     }
 
-    // accepts plain password and stores hashed
     public function setSenha(string $senha): void
     {
         $this->senha = $senha;
+    }
+
+    public function setFoto(string $foto): void
+    {
+        $this->foto = $foto;
     }
 
     public function setPodeRedigir(bool $pode): void

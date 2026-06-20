@@ -70,7 +70,7 @@
 
             <article class="noticia-conteudo">
 
-                <span class="noticia-categoria"><?= e($noticia->getCategoria()) ;?></span>
+                <a href="<?= url('/categoria/' . urlencode($noticia->getCategoria())) ;?>" class="noticia-categoria" style="text-decoration:none;"><?= e($noticia->getCategoria()) ;?></a>
 
                 <h1 class="noticia-titulo"><?= e($noticia->getTitulo()) ;?></h1>
 

@@ -44,6 +44,20 @@ class NoticiaRepository
         return self::hydrateMany($stmt->fetchAll());
     }
 
+    public static function byCategoria(string $categoria): array
+    {
+        $stmt = Database::getConnection()->prepare(
+            'SELECT * FROM Noticia WHERE status = :status AND categoria = :categoria ORDER BY dataPublicacao DESC'
+        );
+
+        $stmt->execute([
+            ':status' => StatusNoticia::APROVADA->value,
+            ':categoria' => $categoria,
+        ]);
+
+        return self::hydrateMany($stmt->fetchAll());
+    }
+
     public static function pendingReview(): array
     {
         $stmt = Database::getConnection()->query(

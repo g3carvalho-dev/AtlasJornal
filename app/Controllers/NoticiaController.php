@@ -13,6 +13,75 @@ class NoticiaController
         require __DIR__ . '/../Views/noticia/create.php';
     }
 
+    public function minhas(): void
+    {
+        $redatorId = $_SESSION['usuario_id'] ?? 1;
+        $noticias = NoticiaRepository::byRedator($redatorId);
+        require __DIR__ . '/../Views/noticia/minhas.php';
+    }
+
+    public function edit(string $id): void
+    {
+        $noticia = NoticiaRepository::find((int) $id);
+        if (!$noticia) {
+            header('Location: ' . url('/'));
+            exit;
+        }
+        require __DIR__ . '/../Views/noticia/edit.php';
+    }
+
+    public function update(string $id): void
+    {
+        $noticia = NoticiaRepository::find((int) $id);
+        if (!$noticia) {
+            header('Location: ' . url('/'));
+            exit;
+        }
+
+        $titulo = trim($_POST['titulo'] ?? '');
+        $categoria = trim($_POST['categoria'] ?? '');
+        $secao = trim($_POST['secao'] ?? '');
+        $resumo = trim($_POST['resumo'] ?? '');
+        $conteudo = trim($_POST['conteudo'] ?? '');
+
+        $errors = [];
+        if ($titulo === '') $errors[] = 'O título é obrigatório.';
+        if ($categoria === '') $errors[] = 'A categoria é obrigatória.';
+        if ($secao === '') $errors[] = 'A seção é obrigatória.';
+        if ($resumo === '') $errors[] = 'O resumo é obrigatório.';
+        if ($conteudo === '') $errors[] = 'O conteúdo é obrigatório.';
+
+        if (!empty($errors)) {
+            $_SESSION['errors'] = $errors;
+            header('Location: ' . url('/noticia/' . $id . '/editar'));
+            exit;
+        }
+
+        $noticia->setTitulo($titulo);
+        $noticia->setCategoria($categoria);
+        $noticia->setSecao($secao);
+        $noticia->setResumo($resumo);
+        $noticia->setConteudo($conteudo);
+
+        if (isset($_FILES['imagem']) && $_FILES['imagem']['error'] === UPLOAD_ERR_OK) {
+            $ext = strtolower(pathinfo($_FILES['imagem']['name'], PATHINFO_EXTENSION));
+            $allowed = ['jpg', 'jpeg', 'png', 'webp'];
+            if (in_array($ext, $allowed)) {
+                $nomeImagem = 'noticia_' . time() . '_' . mt_rand(1000, 9999) . '.' . $ext;
+                $destino = __DIR__ . '/../../public/assets/img/' . $nomeImagem;
+                if (move_uploaded_file($_FILES['imagem']['tmp_name'], $destino)) {
+                    $noticia->setImagem($nomeImagem);
+                }
+            }
+        }
+
+        NoticiaRepository::update($noticia);
+
+        $_SESSION['sucesso'] = 'Notícia atualizada com sucesso!';
+        header('Location: ' . url('/noticia/minhas'));
+        exit;
+    }
+
     public function store(): void
     {
         $titulo = trim($_POST['titulo'] ?? '');

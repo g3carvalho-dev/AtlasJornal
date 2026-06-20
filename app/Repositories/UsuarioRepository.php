@@ -49,8 +49,8 @@ class UsuarioRepository
     public static function create(Usuario $usuario): int
     {
         $stmt = Database::getConnection()->prepare(
-            'INSERT INTO Usuario (nome, nascimento, formacao, assinatura, email, senha, podeRedigir, podeRevisar, isAdmin)
-            VALUES (:nome, :nascimento, :formacao, :assinatura, :email, :senha, :podeRedigir, :podeRevisar, :isAdmin)'
+            'INSERT INTO Usuario (nome, nascimento, formacao, assinatura, email, senha, foto, podeRedigir, podeRevisar, isAdmin)
+            VALUES (:nome, :nascimento, :formacao, :assinatura, :email, :senha, :foto, :podeRedigir, :podeRevisar, :isAdmin)'
         );
 
         $stmt->execute([
@@ -60,6 +60,7 @@ class UsuarioRepository
             ':assinatura' => $usuario->getAssinatura(),
             ':email' => $usuario->getEmail(),
             ':senha' => password_hash($usuario->getSenha(), PASSWORD_DEFAULT),
+            ':foto' => $usuario->getFoto(),
             ':podeRedigir' => $usuario->getPodeRedigir() ? 1 : 0,
             ':podeRevisar' => $usuario->getPodeRevisar() ? 1 : 0,
             ':isAdmin' => $usuario->getIsAdmin() ? 1 : 0,
@@ -134,6 +135,7 @@ class UsuarioRepository
             (string) $row['assinatura'],
             (string) $row['email'],
             (string) $row['senha'],
+            $row['foto'] ?: null,
             (bool) $row['podeRedigir'],
             (bool) $row['podeRevisar'],
             (bool) $row['isAdmin']

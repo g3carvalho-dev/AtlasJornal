@@ -3,6 +3,7 @@
 namespace App\Core;
 
 use App\Controllers\AuthController;
+use App\Controllers\CategoryController;
 use App\Controllers\HomeController;
 use App\Controllers\NoticiaController;
 
@@ -25,6 +26,12 @@ class App
                 $controller->index();
                 break;
 
+            case 'categoria':
+                require_once __DIR__ . '/../Controllers/CategoryController.php';
+                $controller = new CategoryController();
+                $controller->index($segments[1] ?? '');
+                break;
+
             case 'noticia':
                 require_once __DIR__ . '/../Controllers/NoticiaController.php';
                 $controller = new NoticiaController();
@@ -35,10 +42,29 @@ class App
                     } else {
                         $controller->create();
                     }
+                } elseif (($segments[1] ?? '') === 'minhas') {
+                    $controller->minhas();
+                } elseif (($segments[2] ?? '') === 'editar' && is_numeric($segments[1] ?? '')) {
+                    if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+                        $controller->update($segments[1]);
+                    } else {
+                        $controller->edit($segments[1]);
+                    }
                 } else {
                     require_once __DIR__ . '/../Controllers/HomeController.php';
                     $home = new HomeController();
                     $home->show($segments[1] ?? null);
+                }
+                break;
+
+            case 'cadastro':
+                require_once __DIR__ . '/../Controllers/AuthController.php';
+                $controller = new AuthController();
+
+                if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+                    $controller->register();
+                } else {
+                    $controller->cadastro();
                 }
                 break;
 
@@ -57,6 +83,24 @@ class App
                 require_once __DIR__ . '/../Controllers/AuthController.php';
                 $controller = new AuthController();
                 $controller->logout();
+                break;
+
+            case 'revisao':
+                require_once __DIR__ . '/../Controllers/RevisaoController.php';
+                $controller = new RevisaoController();
+                $controller->index();
+                break;
+
+            case 'solicitacoes':
+                require_once __DIR__ . '/../Controllers/SolicitacaoController.php';
+                $controller = new SolicitacaoController();
+                $controller->index();
+                break;
+
+            case 'dashboard':
+                require_once __DIR__ . '/../Controllers/DashboardController.php';
+                $controller = new DashboardController();
+                $controller->index();
                 break;
 
             case 'admin':

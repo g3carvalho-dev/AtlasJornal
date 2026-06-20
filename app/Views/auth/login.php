@@ -1,10 +1,21 @@
+<?php
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
+if (!function_exists('asset')) {
+    function asset($path) { return 'assets/' . $path; }
+}
+if (!function_exists('url')) {
+    function url($path) { return $path; }
+}
+?>
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Jornal Atlas - Entrar</title>
-    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="<?= asset('css/style.css') ;?>">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
 </head>
@@ -12,15 +23,15 @@
 
     <div class="auth-header">
         <div class="auth-logo">
-            <img src="img/atlas.png" alt="Jornal Atlas">
+            <img src="<?= asset('img/atlas.png') ;?>" alt="Jornal Atlas">
         </div>
         <div class="auth-nav">
-            <a href="#">NOTÍCIAS</a>
+            <a href="<?= url('/') ;?>">NOTÍCIAS</a>
             <span class="divider">•</span>
-            <a href="#">CATEGORIAS</a>
+            <a href="<?= url('/categoria/' . urlencode('POLÍTICA')) ;?>">CATEGORIAS</a>
             <span class="divider">•</span>
             <a href="#">SOBRE NÓS</a>
-            <a href="app.php" class="btn-back-site"><i class="fa-solid fa-arrow-left"></i> VOLTAR AO SITE</a>
+            <a href="<?= url('/') ;?>" class="btn-back-site"><i class="fa-solid fa-arrow-left"></i> VOLTAR AO SITE</a>
         </div>
     </div>
 
@@ -40,7 +51,7 @@
                 <h2>Entrar na sua conta</h2>
                 <p class="form-subtitle">Acesse sua conta para continuar lendo as principais notícias do mundo.</p>
 
-                <form action="login_processar.php" method="POST">
+                <form action="<?= url('/login') ;?>" method="POST">
                     
                     <div class="input-group">
                         <label for="email">E-mail</label>
@@ -72,7 +83,7 @@
                     <span>ou</span>
                 </div>
 
-                <a href="cadastro.php" class="btn-auth-secondary">
+                <a href="<?= url('/cadastro') ;?>" class="btn-auth-secondary">
                     <i class="fa-solid fa-user-plus"></i> CRIAR UMA CONTA
                 </a>
 
@@ -97,7 +108,7 @@
         </div>
     </footer>
 
-    <script src="js/script.js"></script>
+    <script src="<?= asset('js/script.js') ;?>"></script>
 
 </body>
 </html>

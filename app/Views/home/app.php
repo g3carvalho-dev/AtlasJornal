@@ -1,3 +1,16 @@
+<?php
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
+
+$userLogado = isset($_SESSION['usuario_logado']) && $_SESSION['usuario_logado'] === true;
+$userCargo = $_SESSION['usuario_cargo'] ?? 'leitor';
+$userNome = $_SESSION['usuario_nome'] ?? '';
+$userFoto = $_SESSION['usuario_foto'] ?? 'img/avatar_admin.png';
+$isRedator = in_array($userCargo, ['redator', 'revisor', 'administrador']);
+$isRevisor = in_array($userCargo, ['revisor', 'administrador']);
+$isAdmin = $userCargo === 'administrador';
+?>
 <!DOCTYPE html>
 <html lang="pt-BR">
 
@@ -62,12 +75,25 @@
         </div>
 
         <div class="logo">
-            <img src="<?= asset('img/atlas.png') ;?>" alt="Jornal Atlas">
+            <a href="<?= url('/') ;?>">
+                <img src="<?= asset('img/atlas.png') ;?>" alt="Jornal Atlas">
+            </a>
         </div>
 
         <div class="header-buttons">
-            <a href="<?= url('/login') ;?>" class="btn-login">Entrar</a>
-            <a href="<?= url('/cadastro') ;?>" class="btn-cadastro">Cadastrar</a>
+            <?php if ($userLogado): ?>
+                <div class="logged-user-info">
+                    <img src="<?= asset($userFoto) ;?>" alt="Foto de perfil" class="user-avatar">
+                    <div class="user-details">
+                        <span class="user-name"><?= e($userNome) ;?></span>
+                        <span class="user-role-label"><?= ucfirst(e($userCargo)) ;?></span>
+                    </div>
+                    <a href="<?= url('/logout') ;?>" class="btn-logout-icon" title="Sair do sistema"><i class="fa-solid fa-right-from-bracket"></i></a>
+                </div>
+            <?php else: ?>
+                <a href="<?= url('/login') ;?>" class="btn-login">Entrar</a>
+                <a href="<?= url('/cadastro') ;?>" class="btn-cadastro">Cadastrar</a>
+            <?php endif; ?>
         </div>
 
     </header>
@@ -78,16 +104,102 @@
 
         <ul>
 
-            <li><a href="#">Política</a></li>
-            <li><a href="#">Tecnologia</a></li>
-            <li><a href="#">Economia</a></li>
-            <li><a href="#">Esportes</a></li>
-            <li><a href="#">Mundo</a></li>
-            <li><a href="#">Cultura</a></li>
+            <li><a href="<?= url('/categoria/' . urlencode('POLÍTICA')) ;?>">Política</a></li>
+            <li><a href="<?= url('/categoria/' . urlencode('TECNOLOGIA')) ;?>">Tecnologia</a></li>
+            <li><a href="<?= url('/categoria/' . urlencode('ECONOMIA')) ;?>">Economia</a></li>
+            <li><a href="<?= url('/categoria/' . urlencode('ESPORTES')) ;?>">Esportes</a></li>
+            <li><a href="<?= url('/categoria/' . urlencode('MUNDO')) ;?>">Mundo</a></li>
+            <li><a href="<?= url('/categoria/' . urlencode('CULTURA')) ;?>">Cultura</a></li>
+            <li><a href="<?= url('/categoria/' . urlencode('SAÚDE')) ;?>">Saúde</a></li>
+            <li><a href="<?= url('/categoria/' . urlencode('CIÊNCIA')) ;?>">Ciência</a></li>
 
         </ul>
 
     </nav>
+
+    <!-- PAINEL ADMIN -->
+    <?php if ($userLogado && $userCargo !== 'leitor'): ?>
+        <div class="admin-panel-topbar">
+            <div class="admin-actions-container">
+
+                <?php if ($isRedator): ?>
+                    <a href="<?= url('/noticia/nova') ;?>" class="admin-btn-box">
+                        <i class="fa-solid fa-pen-to-square"></i>
+                        <div>
+                            <strong>Escrever notícia</strong>
+                            <span>Criar uma nova publicação</span>
+                        </div>
+                    </a>
+                <?php endif; ?>
+
+                <?php if ($isRevisor): ?>
+                    <a href="<?= url('/revisao') ;?>" class="admin-btn-box">
+                        <i class="fa-solid fa-list-check"></i>
+                        <div>
+                            <strong>Revisar pendentes <span class="admin-badge">0</span></strong>
+                            <span>Itens aguardando revisão</span>
+                        </div>
+                    </a>
+                <?php endif; ?>
+
+                <?php if ($isRedator): ?>
+                    <a href="<?= url('/noticia/minhas') ;?>" class="admin-btn-box">
+                        <i class="fa-solid fa-book-open"></i>
+                        <div>
+                            <strong>Minhas notícias</strong>
+                            <span>Gerenciar suas publicações</span>
+                        </div>
+                    </a>
+                <?php endif; ?>
+
+                <?php if ($isAdmin): ?>
+                    <a href="<?= url('/solicitacoes') ;?>" class="admin-btn-box">
+                        <i class="fa-solid fa-user-gear"></i>
+                        <div>
+                            <strong>Solicitações de cargo <span class="admin-badge badge-amber">0</span></strong>
+                            <span>Analisar pedidos de colaboradores</span>
+                        </div>
+                    </a>
+                <?php endif; ?>
+
+                <?php if ($isAdmin): ?>
+                    <a href="<?= url('/dashboard') ;?>" class="admin-btn-full-panel">
+                        <i class="fa-solid fa-chart-line"></i> Ver painel completo <i class="fa-solid fa-chevron-right"></i>
+                    </a>
+                <?php endif; ?>
+
+            </div>
+        </div>
+
+        <div class="admin-metrics-summary">
+            <div class="metric-item">
+                <div class="metric-icon"><i class="fa-regular fa-clock"></i></div>
+                <span class="metric-label">Pendentes</span>
+                <span class="metric-valor">0</span>
+                <span class="metric-sub">aguardando revisão</span>
+            </div>
+            <div class="metric-item">
+                <div class="metric-icon"><i class="fa-regular fa-eye"></i></div>
+                <span class="metric-label">Em Revisão</span>
+                <span class="metric-valor">0</span>
+                <span class="metric-sub">em análise</span>
+            </div>
+            <div class="metric-item">
+                <div class="metric-icon"><i class="fa-regular fa-circle-check"></i></div>
+                <span class="metric-label">Publicadas</span>
+                <span class="metric-valor"><?= count($hero) + count($nacional) + count($internacional) ;?></span>
+                <span class="metric-sub">no total</span>
+            </div>
+            <?php if ($isAdmin): ?>
+            <div class="metric-item">
+                <div class="metric-icon"><i class="fa-regular fa-user"></i></div>
+                <span class="metric-label">Solicitações</span>
+                <span class="metric-valor">0</span>
+                <span class="metric-sub">novas solicitações</span>
+            </div>
+            <?php endif; ?>
+        </div>
+    <?php endif; ?>
 
     <!-- DESTAQUE -->
 
@@ -100,7 +212,17 @@
                     <img src="<?= asset('img/' . $noticia->getImagem()) ;?>" alt="<?= e($noticia->getTitulo()) ;?>">
                 </div>
                 <div class="hero-content">
-                    <span class="categoria"><?= e($noticia->getCategoria()) ;?></span>
+                    <a href="<?= url('/categoria/' . urlencode($noticia->getCategoria())) ;?>" class="categoria" style="text-decoration:none;"><?= e($noticia->getCategoria()) ;?></a>
+
+                    <?php if ($userLogado && $isRedator): ?>
+                        <div class="inline-management-actions">
+                            <a href="<?= url('/noticia/' . $noticia->getId() . '/editar') ;?>" class="btn-inline-edit"><i class="fa-solid fa-pen"></i> Editar</a>
+                            <?php if ($isRevisor): ?>
+                                <a href="<?= url('/revisao') ;?>" class="btn-inline-admin"><i class="fa-solid fa-shield-halved"></i> Administrar</a>
+                            <?php endif; ?>
+                        </div>
+                    <?php endif; ?>
+
                     <h1><?= e($noticia->getTitulo()) ;?></h1>
                     <p><?= e($noticia->getResumo()) ;?></p>
                     <a href="<?= url('/noticia/' . $noticia->getId()) ?>" class="btn-materia">LER MATÉRIA COMPLETA</a>
@@ -138,11 +260,24 @@
         <div class="cards">
 
             <?php foreach ($nacional as $noticia): ?>
-            <a href="<?= url('/noticia/' . $noticia->getId()) ?>" class="card card-link">
-                <img src="<?= asset('img/' . $noticia->getImagem()) ;?>" alt="<?= e($noticia->getTitulo()) ;?>">
-                <h3><?= e($noticia->getTitulo()) ;?></h3>
-                <p><?= e($noticia->getResumo()) ;?></p>
-            </a>
+            <div class="card-wrapper">
+                <a href="<?= url('/noticia/' . $noticia->getId()) ?>" class="card card-link">
+                    <div class="card-img-wrapper">
+                        <img src="<?= asset('img/' . $noticia->getImagem()) ;?>" alt="<?= e($noticia->getTitulo()) ;?>">
+                        <span class="card-categoria-tag"><?= e($noticia->getCategoria()) ;?></span>
+                    </div>
+                    <div class="card-body">
+                        <h3><?= e($noticia->getTitulo()) ;?></h3>
+                        <p><?= e($noticia->getResumo()) ;?></p>
+                    </div>
+                </a>
+
+                <?php if ($userLogado && $isRevisor): ?>
+                    <div class="card-admin-footer">
+                        <a href="<?= url('/noticia/' . $noticia->getId() . '/editar') ;?>" class="btn-card-manage"><i class="fa-solid fa-gear"></i> Administrar</a>
+                    </div>
+                <?php endif; ?>
+            </div>
             <?php endforeach; ?>
 
         </div>
@@ -158,11 +293,24 @@
         <div class="cards">
 
             <?php foreach ($internacional as $noticia): ?>
-            <a href="<?= url('/noticia/' . $noticia->getId()) ?>" class="card card-link">
-                <img src="<?= asset('img/' . $noticia->getImagem()) ;?>" alt="<?= e($noticia->getTitulo()) ;?>">
-                <h3><?= e($noticia->getTitulo()) ;?></h3>
-                <p><?= e($noticia->getResumo()) ;?></p>
-            </a>
+            <div class="card-wrapper">
+                <a href="<?= url('/noticia/' . $noticia->getId()) ?>" class="card card-link">
+                    <div class="card-img-wrapper">
+                        <img src="<?= asset('img/' . $noticia->getImagem()) ;?>" alt="<?= e($noticia->getTitulo()) ;?>">
+                        <span class="card-categoria-tag"><?= e($noticia->getCategoria()) ;?></span>
+                    </div>
+                    <div class="card-body">
+                        <h3><?= e($noticia->getTitulo()) ;?></h3>
+                        <p><?= e($noticia->getResumo()) ;?></p>
+                    </div>
+                </a>
+
+                <?php if ($userLogado && $isRevisor): ?>
+                    <div class="card-admin-footer">
+                        <a href="<?= url('/noticia/' . $noticia->getId() . '/editar') ;?>" class="btn-card-manage"><i class="fa-solid fa-gear"></i> Administrar</a>
+                    </div>
+                <?php endif; ?>
+            </div>
             <?php endforeach; ?>
 
         </div>
@@ -192,12 +340,12 @@
             <div class="footer-links-col">
                 <h4>NAVEGAÇÃO</h4>
                 <div class="links-grid">
-                    <a class="footer-link-item" href="#">Política</a>
-                    <a class="footer-link-item" href="#">Culinária</a>
-                    <a class="footer-link-item" href="#">Artes</a>
-                    <a class="footer-link-item" href="#">Lifestyle</a>
-                    <a class="footer-link-item" href="#">Games</a>
-                    <a class="footer-link-item" href="#">Business</a>
+                    <a class="footer-link-item" href="<?= url('/categoria/' . urlencode('POLÍTICA')) ;?>">Política</a>
+                    <a class="footer-link-item" href="<?= url('/categoria/' . urlencode('ECONOMIA')) ;?>">Economia</a>
+                    <a class="footer-link-item" href="<?= url('/categoria/' . urlencode('ESPORTES')) ;?>">Esportes</a>
+                    <a class="footer-link-item" href="<?= url('/categoria/' . urlencode('CULTURA')) ;?>">Cultura</a>
+                    <a class="footer-link-item" href="<?= url('/categoria/' . urlencode('MUNDO')) ;?>">Mundo</a>
+                    <a class="footer-link-item" href="<?= url('/categoria/' . urlencode('TECNOLOGIA')) ;?>">Tecnologia</a>
                 </div>
             </div>
 

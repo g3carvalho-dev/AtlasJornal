@@ -15,15 +15,15 @@ $pdo = Database::getConnection();
 $adminSenha = password_hash('admin123', PASSWORD_DEFAULT);
 
 $pdo->exec("
-    INSERT INTO Usuario (nome, nascimento, formacao, assinatura, email, senha, podeRedigir, podeRevisar, isAdmin)
-    VALUES ('Eduardo P.', '1990-05-15', 'Jornalismo', 'Admin', 'admin@jornalatlas.com', '$adminSenha', TRUE, TRUE, TRUE)
+    INSERT INTO Usuario (nome, nascimento, formacao, assinatura, email, senha, foto, podeRedigir, podeRevisar, isAdmin)
+    VALUES ('Eduardo P.', '1990-05-15', 'Jornalismo', 'Admin', 'admin@jornalatlas.com', '$adminSenha', NULL, TRUE, TRUE, TRUE)
 ");
 
 $redatorSenha = password_hash('redator123', PASSWORD_DEFAULT);
 
 $pdo->exec("
-    INSERT INTO Usuario (nome, nascimento, formacao, assinatura, email, senha, podeRedigir, podeRevisar, isAdmin)
-    VALUES ('Maria Silva', '1995-08-22', 'Comunicação Social', 'Redatora', 'redator@jornalatlas.com', '$redatorSenha', TRUE, FALSE, FALSE)
+    INSERT INTO Usuario (nome, nascimento, formacao, assinatura, email, senha, foto, podeRedigir, podeRevisar, isAdmin)
+    VALUES ('Maria Silva', '1995-08-22', 'Comunicação Social', 'Redatora', 'redator@jornalatlas.com', '$redatorSenha', NULL, TRUE, FALSE, FALSE)
 ");
 
 // ==================== NOTICIAS (HERO) ====================
