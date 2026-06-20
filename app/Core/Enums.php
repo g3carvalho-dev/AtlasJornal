@@ -4,6 +4,7 @@ namespace App\Core;
 
 enum StatusNoticia: string
 {
+    case RASCUNHO = 'RASCUNHO';
     case ANALISE = 'EM_ANALISE';
     case APROVADA = 'APROVADA';
     case ARQUIVADA = 'ARQUIVADA';

@@ -88,7 +88,7 @@ class NoticiaRepository
             ':imagem' => $noticia->getImagem(),
             ':categoria' => $noticia->getCategoria(),
             ':secao' => $noticia->getSecao(),
-            ':status' => StatusNoticia::ANALISE->value,
+            ':status' => $noticia->getStatus()->value,
         ]);
 
         return (int) Database::getConnection()->lastInsertId();

@@ -26,10 +26,20 @@ class App
                 break;
 
             case 'noticia':
-                require_once __DIR__ . '/../Controllers/HomeController.php';
-                $controller = new HomeController();
-                $id = $segments[1] ?? null;
-                $controller->show($id);
+                require_once __DIR__ . '/../Controllers/NoticiaController.php';
+                $controller = new NoticiaController();
+
+                if (($segments[1] ?? '') === 'nova') {
+                    if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+                        $controller->store();
+                    } else {
+                        $controller->create();
+                    }
+                } else {
+                    require_once __DIR__ . '/../Controllers/HomeController.php';
+                    $home = new HomeController();
+                    $home->show($segments[1] ?? null);
+                }
                 break;
 
             case 'login':
