@@ -58,6 +58,18 @@ class SolicitacaoCargoRepository
         return $stmt->fetchAll();
     }
 
+    public static function pendingWithUser(): array
+    {
+        $stmt = Database::getConnection()->query(
+            'SELECT sc.*, u.nome AS usuario_nome, u.email AS usuario_email, u.foto AS usuario_foto
+             FROM SolicitacaoCargo sc
+             JOIN Usuario u ON sc.usuario_id = u.id
+             WHERE sc.status = \'' . StatusSolicitacao::ANALISE->value . '\'
+             ORDER BY sc.dataSolicitacao DESC'
+        );
+        return $stmt->fetchAll();
+    }
+
     public static function stats(): array
     {
         $pendentes = (int) Database::getConnection()->query(

@@ -67,6 +67,19 @@ class NoticiaRepository
         return self::hydrateMany($stmt->fetchAll());
     }
 
+    public static function pendingReviewWithAuthor(): array
+    {
+        $stmt = Database::getConnection()->query(
+            'SELECT n.*, u.nome AS autor_nome, u.foto AS autor_foto
+             FROM Noticia n
+             LEFT JOIN Usuario u ON n.redator_id = u.id
+             WHERE n.status = \'' . StatusNoticia::ANALISE->value . '\'
+             ORDER BY n.dataCriacao DESC'
+        );
+
+        return $stmt->fetchAll();
+    }
+
     public static function byRedator(int $redatorId): array
     {
         $stmt = Database::getConnection()->prepare(

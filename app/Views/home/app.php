@@ -171,34 +171,6 @@ $isAdmin = $userCargo === 'administrador';
             </div>
         </div>
 
-        <div class="admin-metrics-summary">
-            <div class="metric-item">
-                <div class="metric-icon"><i class="fa-regular fa-clock"></i></div>
-                <span class="metric-label">Pendentes</span>
-                <span class="metric-valor">0</span>
-                <span class="metric-sub">aguardando revisão</span>
-            </div>
-            <div class="metric-item">
-                <div class="metric-icon"><i class="fa-regular fa-eye"></i></div>
-                <span class="metric-label">Em Revisão</span>
-                <span class="metric-valor">0</span>
-                <span class="metric-sub">em análise</span>
-            </div>
-            <div class="metric-item">
-                <div class="metric-icon"><i class="fa-regular fa-circle-check"></i></div>
-                <span class="metric-label">Publicadas</span>
-                <span class="metric-valor"><?= count($hero) + count($nacional) + count($internacional) ;?></span>
-                <span class="metric-sub">no total</span>
-            </div>
-            <?php if ($isAdmin): ?>
-            <div class="metric-item">
-                <div class="metric-icon"><i class="fa-regular fa-user"></i></div>
-                <span class="metric-label">Solicitações</span>
-                <span class="metric-valor">0</span>
-                <span class="metric-sub">novas solicitações</span>
-            </div>
-            <?php endif; ?>
-        </div>
     <?php endif; ?>
 
     <!-- DESTAQUE -->

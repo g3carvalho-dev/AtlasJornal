@@ -50,12 +50,9 @@
     <!-- MENU -->
     <nav>
         <ul>
-            <li><a href="#">Política</a></li>
-            <li><a href="#">Tecnologia</a></li>
-            <li><a href="#">Economia</a></li>
-            <li><a href="#">Esportes</a></li>
-            <li><a href="#">Mundo</a></li>
-            <li><a href="#">Cultura</a></li>
+            <?php $cats = ['Política'=>'POLÍTICA','Tecnologia'=>'TECNOLOGIA','Economia'=>'ECONOMIA','Esportes'=>'ESPORTES','Mundo'=>'MUNDO','Cultura'=>'CULTURA','Saúde'=>'SAÚDE','Ciência'=>'CIÊNCIA']; foreach ($cats as $l => $v): ?>
+                <li><a href="<?= url('/categoria/' . urlencode($v)) ;?>"><?= $l ;?></a></li>
+            <?php endforeach; ?>
         </ul>
     </nav>
 
@@ -119,9 +116,13 @@ $relacionadasFiltradas = array_slice($relacionadasFiltradas, 0, 3);
         <div class="cards">
             <?php foreach ($relacionadasFiltradas as $rel): ?>
             <a href="<?= url('/noticia/' . $rel->getId()) ;?>" class="card card-link">
-                <img src="<?= asset('img/' . $rel->getImagem()) ;?>" alt="<?= e($rel->getTitulo()) ;?>">
-                <h3><?= e($rel->getTitulo()) ;?></h3>
-                <p><?= e($rel->getResumo()) ;?></p>
+                <div class="card-img-wrapper">
+                    <img src="<?= asset('img/' . $rel->getImagem()) ;?>" alt="<?= e($rel->getTitulo()) ;?>">
+                </div>
+                <div class="card-body">
+                    <h3><?= e($rel->getTitulo()) ;?></h3>
+                    <p><?= e($rel->getResumo()) ;?></p>
+                </div>
             </a>
             <?php endforeach; ?>
         </div>

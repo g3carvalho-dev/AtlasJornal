@@ -125,6 +125,20 @@ class UsuarioRepository
         return $stmt->execute([':id' => $id]);
     }
 
+    public static function countRedatores(): int
+    {
+        return (int) Database::getConnection()->query(
+            'SELECT COUNT(*) FROM Usuario WHERE podeRedigir = 1 AND isAdmin = 0'
+        )->fetchColumn();
+    }
+
+    public static function countRevisores(): int
+    {
+        return (int) Database::getConnection()->query(
+            'SELECT COUNT(*) FROM Usuario WHERE podeRevisar = 1 AND isAdmin = 0'
+        )->fetchColumn();
+    }
+
     private static function hydrate(array $row): Usuario
     {
         return new Usuario(

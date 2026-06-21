@@ -3,15 +3,27 @@
 namespace App\Controllers;
 
 use App\Repositories\NoticiaRepository;
+use App\Repositories\SolicitacaoCargoRepository;
+use App\Repositories\UsuarioRepository;
 use App\Core\StatusNoticia;
 
 class DashboardController
 {
     public function index(): void
     {
-        $publicadas = count(NoticiaRepository::byStatus(StatusNoticia::APROVADA));
+        $total = count(NoticiaRepository::byStatus(StatusNoticia::APROVADA))
+               + count(NoticiaRepository::byStatus(StatusNoticia::ANALISE))
+               + count(NoticiaRepository::byStatus(StatusNoticia::RASCUNHO))
+               + count(NoticiaRepository::byStatus(StatusNoticia::ARQUIVADA))
+               + count(NoticiaRepository::byStatus(StatusNoticia::REJEITADA));
+
+        $aprovadas = count(NoticiaRepository::byStatus(StatusNoticia::APROVADA));
         $pendentes = count(NoticiaRepository::pendingReview());
-        $total = $publicadas + $pendentes;
+        $redatores = UsuarioRepository::countRedatores();
+        $revisores = UsuarioRepository::countRevisores();
+
+        $filaRevisao = NoticiaRepository::pendingReviewWithAuthor();
+        $solicitacoes = SolicitacaoCargoRepository::pendingWithUser();
 
         require __DIR__ . '/../Views/dashboard/index.php';
     }
