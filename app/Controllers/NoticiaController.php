@@ -145,7 +145,7 @@ class NoticiaController
 
         $noticia = new Noticia(
             0,
-            1,
+            (int) $_SESSION['usuario_id'],
             $titulo,
             $resumo,
             $conteudo,
@@ -165,6 +165,36 @@ class NoticiaController
         }
 
         header('Location: ' . url('/'));
+        exit;
+    }
+
+    public function publicar(string $id): void
+    {
+        $noticia = NoticiaRepository::find((int) $id);
+        if (!$noticia || $noticia->getStatus() !== StatusNoticia::RASCUNHO) {
+            header('Location: ' . url('/noticia/minhas'));
+            exit;
+        }
+
+        NoticiaRepository::updateStatus((int) $id, StatusNoticia::ANALISE);
+
+        $_SESSION['sucesso'] = 'Notícia enviada para revisão com sucesso!';
+        header('Location: ' . url('/noticia/minhas'));
+        exit;
+    }
+
+    public function excluirRascunho(string $id): void
+    {
+        $noticia = NoticiaRepository::find((int) $id);
+        if (!$noticia || $noticia->getStatus() !== StatusNoticia::RASCUNHO) {
+            header('Location: ' . url('/noticia/minhas'));
+            exit;
+        }
+
+        NoticiaRepository::delete((int) $id);
+
+        $_SESSION['sucesso'] = 'Rascunho excluído com sucesso!';
+        header('Location: ' . url('/noticia/minhas'));
         exit;
     }
 }

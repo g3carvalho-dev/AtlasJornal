@@ -1,3 +1,4 @@
+<?php if (session_status() === PHP_SESSION_NONE) session_start(); ?>
 <!DOCTYPE html>
 <html lang="pt-BR">
 
@@ -7,9 +8,11 @@
 
     <title>Nova Notícia - Jornal Atlas</title>
 
-    <link rel="stylesheet" href="<?= asset('css/style.css') ?>">
+    <link rel="stylesheet" href="<?= asset('css/style.css') ;?>">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;700&family=Inter:wght@300;400;500;600&display=swap"
+        rel="stylesheet">
 </head>
 
 <body>
@@ -34,14 +37,29 @@
     <header>
         <div class="search-box">
             <i class="fa-solid fa-magnifying-glass"></i>
-            <input type="text" placeholder="Buscar notícias...">
+            <form action="<?= url('/busca') ;?>" method="GET">
+                <input type="hidden" name="url" value="busca">
+                <input type="text" name="q" placeholder="Buscar notícias...">
+            </form>
         </div>
         <div class="logo">
-            <a href="<?= url('/') ?>"><img src="<?= asset('img/atlas.png') ?>" alt="Jornal Atlas"></a>
+            <a href="<?= url('/') ;?>"><img src="<?= asset('img/atlas.png') ;?>" alt="Jornal Atlas"></a>
         </div>
         <div class="header-buttons">
-            <a href="<?= url('/login') ?>" class="btn-login">Entrar</a>
-            <a href="<?= url('/cadastro') ?>" class="btn-cadastro">Cadastrar</a>
+            <?php $userLogado = isset($_SESSION['usuario_logado']) && $_SESSION['usuario_logado'] === true; ?>
+            <?php if ($userLogado): ?>
+                <div class="logged-user-info" style="cursor:pointer" onclick="window.location='<?= url('/perfil') ;?>'">
+                    <img src="<?= asset($_SESSION['usuario_foto'] ?? 'img/avatar_admin.png') ;?>" alt="Foto de perfil" class="user-avatar">
+                    <div class="user-details">
+                        <span class="user-name"><?= e($_SESSION['usuario_nome'] ?? '') ;?></span>
+                        <span class="user-role-label"><?= ucfirst(e($_SESSION['usuario_cargo'] ?? '')) ;?></span>
+                    </div>
+                    <a href="<?= url('/logout') ;?>" class="btn-logout-icon" title="Sair do sistema"><i class="fa-solid fa-right-from-bracket"></i></a>
+                </div>
+            <?php else: ?>
+                <a href="<?= url('/login') ;?>" class="btn-login">Entrar</a>
+                <a href="<?= url('/cadastro') ;?>" class="btn-cadastro">Cadastrar</a>
+            <?php endif; ?>
         </div>
     </header>
 
@@ -62,7 +80,7 @@
 
         <!-- BREADCRUMB -->
         <div class="breadcrumb">
-            <a href="<?= url('/') ?>">Home</a>
+            <a href="<?= url('/') ;?>">Home</a>
             <span>/</span>
             <span>Nova notícia</span>
         </div>
@@ -72,18 +90,19 @@
             <i class="fa-solid fa-circle-exclamation"></i>
             <ul>
                 <?php foreach ($_SESSION['errors'] as $erro): ?>
-                <li><?= e($erro) ?></li>
+                <li><?= e($erro) ;?></li>
                 <?php endforeach; ?>
             </ul>
         </div>
-        <?php unset($_SESSION['errors']); endif; ?>
+        <?php unset($_SESSION['errors']);endif; ?>
 
         <?php
-        $old = $_SESSION['old'] ?? [];
-        unset($_SESSION['old']);
-        ?>
+$old = $_SESSION['old'] ?? [];
+unset($_SESSION['old']);
+?>
 
-        <form action="<?= url('/noticia/nova') ?>" method="POST" enctype="multipart/form-data" class="create-layout" id="form-noticia">
+        <form action="<?= url('/noticia/nova') ;?>" method="POST" enctype="multipart/form-data" class="create-layout"
+            id="form-noticia">
 
             <!-- FORM PRINCIPAL -->
             <div class="create-form">
@@ -97,7 +116,7 @@
                     <label class="form-label">TÍTULO <span class="obrigatorio">*</span></label>
                     <input type="text" name="titulo" class="form-input"
                         placeholder="Digite um título claro, informativo e atraente"
-                        value="<?= e($old['titulo'] ?? '') ?>" required>
+                        value="<?= e($old['titulo'] ?? '') ;?>" required>
                 </div>
 
                 <!-- CATEGORIA + SECAO -->
@@ -107,11 +126,11 @@
                         <select name="categoria" class="form-select" required>
                             <option value="">Selecione uma categoria</option>
                             <?php
-                            $cats = ['POLÍTICA', 'ECONOMIA', 'ESPORTES', 'SAÚDE', 'CIÊNCIA', 'CULTURA', 'TECNOLOGIA', 'MUNDO'];
-                            $selected = $old['categoria'] ?? '';
-                            foreach ($cats as $cat):
-                            ?>
-                            <option value="<?= $cat ?>" <?= $selected === $cat ? 'selected' : '' ?>><?= $cat ?></option>
+$cats = ['POLÍTICA', 'ECONOMIA', 'ESPORTES', 'SAÚDE', 'CIÊNCIA', 'CULTURA', 'TECNOLOGIA', 'MUNDO'];
+$selected = $old['categoria'] ?? '';
+foreach ($cats as $cat):
+?>
+                            <option value="<?= $cat ;?>" <?= $selected === $cat ? 'selected' : '' ;?>><?= $cat ;?></option>
                             <?php endforeach; ?>
                         </select>
                     </div>
@@ -120,11 +139,12 @@
                         <select name="secao" class="form-select" required>
                             <option value="">Selecione uma seção</option>
                             <?php
-                            $secs = ['hero' => 'Destaques (Hero)', 'nacional' => 'Nacional', 'internacional' => 'Internacional'];
-                            $selectedSec = $old['secao'] ?? '';
-                            foreach ($secs as $val => $label):
-                            ?>
-                            <option value="<?= $val ?>" <?= $selectedSec === $val ? 'selected' : '' ?>><?= $label ?></option>
+$secs = ['hero' => 'Destaques (Hero)', 'nacional' => 'Nacional', 'internacional' => 'Internacional'];
+$selectedSec = $old['secao'] ?? '';
+foreach ($secs as $val => $label):
+?>
+                            <option value="<?= $val ;?>" <?= $selectedSec === $val ? 'selected' : '' ;?>><?= $label ;?>
+                            </option>
                             <?php endforeach; ?>
                         </select>
                     </div>
@@ -135,7 +155,7 @@
                     <label class="form-label">RESUMO <span class="obrigatorio">*</span></label>
                     <textarea name="resumo" class="form-textarea" rows="3" maxlength="300"
                         placeholder="Escreva um resumo curto que aparecerá nos destaques e nas buscas do site..."
-                        required id="resumo"><?= e($old['resumo'] ?? '') ?></textarea>
+                        required id="resumo"><?= e($old['resumo'] ?? '') ;?></textarea>
                     <div class="form-contador"><span id="resumo-contador">0</span>/300 caracteres</div>
                 </div>
 
@@ -162,8 +182,8 @@
                 <div class="form-grupo">
                     <label class="form-label">CONTEÚDO <span class="obrigatorio">*</span></label>
                     <textarea name="conteudo" class="form-textarea-conteudo" rows="15"
-                        placeholder="Comece a escrever sua notícia aqui..."
-                        required id="conteudo-campo"><?= e($old['conteudo'] ?? '') ?></textarea>
+                        placeholder="Comece a escrever sua notícia aqui..." required
+                        id="conteudo-campo"><?= e($old['conteudo'] ?? '') ;?></textarea>
                     <div class="form-contador">Contagem de palavras: <span id="palavras-contador">0</span></div>
                 </div>
 
@@ -198,7 +218,8 @@
                         <li id="check-titulo"><i class="fa-regular fa-circle"></i> Título claro e objetivo</li>
                         <li id="check-resumo"><i class="fa-regular fa-circle"></i> Resumo preenchido</li>
                         <li id="check-imagem"><i class="fa-regular fa-circle"></i> Imagem de capa definida</li>
-                        <li id="check-conteudo"><i class="fa-regular fa-circle"></i> Conteúdo com no mínimo 10 palavras</li>
+                        <li id="check-conteudo"><i class="fa-regular fa-circle"></i> Conteúdo com no mínimo 10 palavras
+                        </li>
                         <li id="check-categoria"><i class="fa-regular fa-circle"></i> Categoria e seção definidas</li>
                     </ul>
                 </div>
@@ -214,23 +235,23 @@
 
             </aside>
 
-        <!-- BOTOES DE ACAO -->
-        <div class="create-actions">
-            <a href="<?= url('/') ?>" class="btn-action btn-cancelar">
-                <i class="fa-solid fa-xmark"></i> CANCELAR
-            </a>
-            <div class="create-actions-direita">
-                <button type="submit" name="acao" value="salvar" class="btn-action btn-salvar">
-                    <i class="fa-regular fa-floppy-disk"></i> SALVAR RASCUNHO
-                </button>
-                <button type="button" class="btn-action btn-visualizar" id="btn-preview">
-                    <i class="fa-regular fa-eye"></i> VISUALIZAR
-                </button>
-                <button type="submit" name="acao" value="enviar" class="btn-action btn-enviar">
-                    ENVIAR PARA REVISÃO <i class="fa-solid fa-arrow-right"></i>
-                </button>
+            <!-- BOTOES DE ACAO -->
+            <div class="create-actions">
+                <a href="<?= url('/') ;?>" class="btn-action btn-cancelar">
+                    <i class="fa-solid fa-xmark"></i> CANCELAR
+                </a>
+                <div class="create-actions-direita">
+                    <button type="submit" name="acao" value="salvar" class="btn-action btn-salvar">
+                        <i class="fa-regular fa-floppy-disk"></i> SALVAR RASCUNHO
+                    </button>
+                    <button type="button" class="btn-action btn-visualizar" id="btn-preview">
+                        <i class="fa-regular fa-eye"></i> VISUALIZAR
+                    </button>
+                    <button type="submit" name="acao" value="enviar" class="btn-action btn-enviar">
+                        ENVIAR PARA REVISÃO <i class="fa-solid fa-arrow-right"></i>
+                    </button>
+                </div>
             </div>
-        </div>
 
         </form>
 
@@ -241,7 +262,7 @@
         <div class="footer-container">
             <div class="footer-brand">
                 <div class="footer-logo">
-                    <img src="<?= asset('img/atlas.png') ?>" alt="Jornal Atlas">
+                    <img src="<?= asset('img/atlas.png') ;?>" alt="Jornal Atlas">
                 </div>
                 <p class="footer-tagline">
                     Informação com profundidade, contexto e credibilidade para entender o mundo.
@@ -293,8 +314,12 @@
     <script>
     // Data atual na topbar
     const data = new Date();
-    const diasSemana = ["Domingo", "Segunda-feira", "Terça-feira", "Quarta-feira", "Quinta-feira", "Sexta-feira", "Sábado"];
-    const meses = ["Janeiro", "Fevereiro", "Março", "Abril", "Maio", "Junho", "Julho", "Agosto", "Setembro", "Outubro", "Novembro", "Dezembro"];
+    const diasSemana = ["Domingo", "Segunda-feira", "Terça-feira", "Quarta-feira", "Quinta-feira", "Sexta-feira",
+        "Sábado"
+    ];
+    const meses = ["janeiro", "fevereiro", "março", "abril", "maio", "junho", "julho", "agosto", "setembro", "outubro",
+        "novembro", "dezembro"
+    ];
     document.getElementById("data-atual").textContent =
         `${diasSemana[data.getDay()]}, ${data.getDate()} de ${meses[data.getMonth()]} de ${data.getFullYear()}`;
 
@@ -409,7 +434,8 @@
 
         let imgHtml = '';
         if (uploadPreview.style.display !== 'none') {
-            imgHtml = '<img src="' + previewImg.src + '" style="max-width:100%;border-radius:10px;margin:20px 0;">';
+            imgHtml = '<img src="' + previewImg.src +
+                '" style="max-width:100%;border-radius:10px;margin:20px 0;">';
         }
 
         const preview = `

@@ -89,6 +89,28 @@ class RevisaoRepository
         return $row ? self::hydrate($row) : null;
     }
 
+    public static function revisadasByRevisor(int $revisorId): array
+    {
+        $stmt = Database::getConnection()->prepare(
+            'SELECT r.*, n.titulo, n.imagem, n.categoria, n.resumo, n.status AS noticia_status
+             FROM Revisao r
+             JOIN Noticia n ON r.noticia_id = n.id
+             WHERE r.revisor_id = :revisorId
+             ORDER BY r.dataRevisao DESC'
+        );
+        $stmt->execute([':revisorId' => $revisorId]);
+        return $stmt->fetchAll();
+    }
+
+    public static function countByRevisor(int $revisorId): int
+    {
+        $stmt = Database::getConnection()->prepare(
+            'SELECT COUNT(*) FROM Revisao WHERE revisor_id = :id'
+        );
+        $stmt->execute([':id' => $revisorId]);
+        return (int) $stmt->fetchColumn();
+    }
+
     private static function hydrate(array $row): Revisao
     {
         return new Revisao(

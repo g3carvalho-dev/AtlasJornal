@@ -12,15 +12,28 @@ class RevisaoController
 {
     public function index(): void
     {
-        $noticias = RevisaoRepository::pendingWithAuthor();
+        $userCargo = $_SESSION['usuario_cargo'] ?? 'leitor';
+        $userId = $_SESSION['usuario_id'] ?? 0;
+        $isRevisorOuAdmin = in_array($userCargo, ['revisor', 'administrador']);
+
+        if ($isRevisorOuAdmin) {
+            $noticias = RevisaoRepository::pendingWithAuthor();
+        } else {
+            $noticias = NoticiaRepository::pendingByRedatorWithAuthor($userId);
+        }
+
         $noticiaSelecionada = null;
         $autorNoticia = null;
+        $podeAprovar = false;
 
         $noticiaId = $_GET['noticia'] ?? null;
         if ($noticiaId) {
             $noticiaSelecionada = NoticiaRepository::find((int) $noticiaId);
             if ($noticiaSelecionada) {
                 $autorNoticia = \App\Repositories\UsuarioRepository::find($noticiaSelecionada->getRedatorId());
+                $revisorId = $_SESSION['usuario_id'] ?? 0;
+                $isAdmin = ($_SESSION['usuario_cargo'] ?? '') === 'administrador';
+                $podeAprovar = $isAdmin || ($noticiaSelecionada->getRedatorId() !== $revisorId);
             }
         }
 
@@ -35,8 +48,16 @@ class RevisaoController
             exit;
         }
 
+        $revisorId = $_SESSION['usuario_id'] ?? 0;
+        $isAdmin = ($_SESSION['usuario_cargo'] ?? '') === 'administrador';
+
+        if ($noticia->getRedatorId() === $revisorId && !$isAdmin) {
+            $_SESSION['erro'] = 'Você não pode aprovar seu próprio artigo.';
+            header('Location: ' . url('/revisao?noticia=' . $id));
+            exit;
+        }
+
         $observacao = trim($_POST['observacao'] ?? '');
-        $revisorId = $_SESSION['usuario_id'] ?? 1;
 
         $revisao = new Revisao(0, $revisorId, (int) $id, AcaoRevisao::APROVAR, new \DateTime(), $observacao ?: null);
         RevisaoRepository::create($revisao);

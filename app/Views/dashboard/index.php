@@ -26,19 +26,21 @@ $userEmail = $_SESSION['usuario_email'] ?? '';
             <a href="<?= url('/dashboard') ;?>" class="dash-nav-item active">
                 <i class="fa-solid fa-house"></i> Dashboard
             </a>
-            <a href="<?= url('/revisao') ;?>" class="dash-nav-item">
+            <a href="<?= url('/admin/noticias') ;?>" class="dash-nav-item">
                 <i class="fa-solid fa-newspaper"></i> Notícias
             </a>
             <a href="<?= url('/revisao') ;?>" class="dash-nav-item">
                 <i class="fa-solid fa-clock-rotate-left"></i> Revisões
             </a>
-            <a href="<?= url('/solicitacoes') ;?>" class="dash-nav-item">
-                <i class="fa-solid fa-user-gear"></i> Solicitações de Cargo
-            </a>
-            <a href="#" class="dash-nav-item">
-                <i class="fa-solid fa-users"></i> Usuários
-            </a>
-            <a href="#" class="dash-nav-item">
+            <?php if (($_SESSION['usuario_cargo'] ?? '') === 'administrador'): ?>
+                <a href="<?= url('/solicitacoes') ;?>" class="dash-nav-item">
+                    <i class="fa-solid fa-user-gear"></i> Solicitações de Cargo
+                </a>
+                <a href="<?= url('/admin/usuarios') ;?>" class="dash-nav-item">
+                    <i class="fa-solid fa-users"></i> Usuários
+                </a>
+            <?php endif; ?>
+            <a href="<?= url('/perfil') ;?>" class="dash-nav-item">
                 <i class="fa-solid fa-user-circle"></i> Perfil
             </a>
         </nav>

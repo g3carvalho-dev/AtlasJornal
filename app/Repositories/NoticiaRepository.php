@@ -80,6 +80,24 @@ class NoticiaRepository
         return $stmt->fetchAll();
     }
 
+    public static function countByRedator(int $redatorId): int
+    {
+        $stmt = Database::getConnection()->prepare(
+            'SELECT COUNT(*) FROM Noticia WHERE redator_id = :id'
+        );
+        $stmt->execute([':id' => $redatorId]);
+        return (int) $stmt->fetchColumn();
+    }
+
+    public static function countByRedatorPending(int $redatorId): int
+    {
+        $stmt = Database::getConnection()->prepare(
+            'SELECT COUNT(*) FROM Noticia WHERE redator_id = :id AND status = :status'
+        );
+        $stmt->execute([':id' => $redatorId, ':status' => StatusNoticia::ANALISE->value]);
+        return (int) $stmt->fetchColumn();
+    }
+
     public static function byRedator(int $redatorId): array
     {
         $stmt = Database::getConnection()->prepare(
@@ -146,7 +164,61 @@ class NoticiaRepository
         ]);
     }
 
-    private static function updateStatus(int $id, StatusNoticia $status, ?DateTime $dataPublicacao = null): bool
+    public static function allWithAuthor(): array
+    {
+        $stmt = Database::getConnection()->query(
+            'SELECT n.*, u.nome AS autor_nome, u.email AS autor_email, u.foto AS autor_foto
+             FROM Noticia n
+             LEFT JOIN Usuario u ON n.redator_id = u.id
+             ORDER BY n.dataCriacao DESC'
+        );
+
+        return $stmt->fetchAll();
+    }
+
+    public static function pendingByRedatorWithAuthor(int $redatorId): array
+    {
+        $stmt = Database::getConnection()->prepare(
+            'SELECT n.*, u.nome AS autor_nome, u.email AS autor_email, u.foto AS autor_foto
+             FROM Noticia n
+             LEFT JOIN Usuario u ON n.redator_id = u.id
+             WHERE n.status = :status AND n.redator_id = :redatorId
+             ORDER BY n.dataCriacao DESC'
+        );
+
+        $stmt->execute([
+            ':status' => StatusNoticia::ANALISE->value,
+            ':redatorId' => $redatorId,
+        ]);
+
+        return $stmt->fetchAll();
+    }
+
+    public static function search(string $termo): array
+    {
+        $termo = '%' . $termo . '%';
+
+        $stmt = Database::getConnection()->prepare(
+            'SELECT n.*, u.nome AS autor_nome
+             FROM Noticia n
+             LEFT JOIN Usuario u ON n.redator_id = u.id
+             WHERE n.status = :status
+               AND (n.titulo LIKE :t1 OR n.resumo LIKE :t2 OR n.conteudo LIKE :t3 OR n.categoria LIKE :t4)
+             ORDER BY n.dataPublicacao DESC'
+        );
+
+        $stmt->execute([
+            ':status' => StatusNoticia::APROVADA->value,
+            ':t1' => $termo,
+            ':t2' => $termo,
+            ':t3' => $termo,
+            ':t4' => $termo,
+        ]);
+
+        return $stmt->fetchAll();
+    }
+
+    public static function updateStatus(int $id, StatusNoticia $status, ?DateTime $dataPublicacao = null): bool
     {
         $sql = 'UPDATE Noticia SET status = :status, dataEdicao = NOW()';
         $params = [':id' => $id, ':status' => $status->value];

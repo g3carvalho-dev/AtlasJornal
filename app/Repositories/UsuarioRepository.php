@@ -90,6 +90,27 @@ class UsuarioRepository
         ]);
     }
 
+    public static function updateProfile(int $id, string $nome, string $email, string $nascimento, string $formacao, string $assinatura): bool
+    {
+        $stmt = Database::getConnection()->prepare(
+            'UPDATE Usuario SET
+                nome = :nome,
+                email = :email,
+                nascimento = :nascimento,
+                formacao = :formacao,
+                assinatura = :assinatura
+            WHERE id = :id'
+        );
+        return $stmt->execute([
+            ':id' => $id,
+            ':nome' => $nome,
+            ':email' => $email,
+            ':nascimento' => $nascimento,
+            ':formacao' => $formacao,
+            ':assinatura' => $assinatura,
+        ]);
+    }
+
     public static function updateSenha(int $id, string $senha): bool
     {
         $stmt = Database::getConnection()->prepare(

@@ -15,10 +15,28 @@ unset($_SESSION['errors']);
 </head>
 <body>
     <header>
-        <div class="search-box"><i class="fa-solid fa-magnifying-glass"></i><input type="text" placeholder="Buscar notícias..."></div>
+        <div class="search-box"><i class="fa-solid fa-magnifying-glass"></i>
+            <form action="<?= url('/busca') ;?>" method="GET">
+                <input type="hidden" name="url" value="busca">
+                <input type="text" name="q" placeholder="Buscar notícias...">
+            </form>
+        </div>
         <div class="logo"><a href="<?= url('/') ;?>"><img src="<?= asset('img/atlas.png') ;?>" alt="Jornal Atlas"></a></div>
         <div class="header-buttons">
-            <a href="<?= url('/') ;?>" class="btn-login"><i class="fa-solid fa-arrow-left"></i> Voltar</a>
+            <?php $userLogado = isset($_SESSION['usuario_logado']) && $_SESSION['usuario_logado'] === true; ?>
+            <?php if ($userLogado): ?>
+                <div class="logged-user-info" style="cursor:pointer" onclick="window.location='<?= url('/perfil') ;?>'">
+                    <img src="<?= asset($_SESSION['usuario_foto'] ?? 'img/avatar_admin.png') ;?>" alt="Foto de perfil" class="user-avatar">
+                    <div class="user-details">
+                        <span class="user-name"><?= e($_SESSION['usuario_nome'] ?? '') ;?></span>
+                        <span class="user-role-label"><?= ucfirst(e($_SESSION['usuario_cargo'] ?? '')) ;?></span>
+                    </div>
+                    <a href="<?= url('/logout') ;?>" class="btn-logout-icon" title="Sair do sistema"><i class="fa-solid fa-right-from-bracket"></i></a>
+                </div>
+            <?php else: ?>
+                <a href="<?= url('/login') ;?>" class="btn-login">Entrar</a>
+                <a href="<?= url('/cadastro') ;?>" class="btn-cadastro">Cadastrar</a>
+            <?php endif; ?>
         </div>
     </header>
 
@@ -109,6 +127,17 @@ unset($_SESSION['errors']);
                             <i class="fa-solid fa-xmark"></i> Cancelar
                         </a>
                         <div class="create-actions-direita">
+                            <a href="<?= url('/noticia/' . $noticia->getId()) ;?>" class="btn-action btn-visualizar" target="_blank">
+                                <i class="fa-solid fa-eye"></i> Visualizar
+                            </a>
+                            <?php if ($noticia->getStatus()->value === 'RASCUNHO'): ?>
+                            <a href="<?= url('/noticia/' . $noticia->getId() . '/excluir-rascunho') ;?>" class="btn-action btn-excluir-rascunho" onclick="return confirm('Tem certeza que deseja excluir este rascunho?')">
+                                <i class="fa-solid fa-trash"></i> Excluir Rascunho
+                            </a>
+                            <a href="<?= url('/noticia/' . $noticia->getId() . '/publicar') ;?>" class="btn-action btn-publicar" onclick="return confirm('Enviar esta notícia para revisão?')">
+                                <i class="fa-solid fa-paper-plane"></i> Publicar
+                            </a>
+                            <?php endif; ?>
                             <button type="submit" class="btn-action btn-salvar">
                                 <i class="fa-solid fa-floppy-disk"></i> Salvar Alterações
                             </button>
@@ -120,7 +149,8 @@ unset($_SESSION['errors']);
                     <div class="sidebar-card">
                         <div class="sidebar-titulo">Status</div>
                         <div class="sidebar-campo">
-                            <span class="status-badge status-rascunho">
+                            <?php $statusCls = strtolower(str_replace('_', '-', $noticia->getStatus()->value)); ?>
+                            <span class="status-badge status-<?= $statusCls ;?>">
                                 <i class="fa-regular fa-pen-to-square"></i>
                                 <?= $noticia->getStatus()->value ;?>
                             </span>

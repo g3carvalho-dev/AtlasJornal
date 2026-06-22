@@ -2,18 +2,39 @@
 
 namespace App\Core;
 
+use App\Controllers\AdminNoticiaController;
 use App\Controllers\AuthController;
 use App\Controllers\CategoryController;
 use App\Controllers\DashboardController;
 use App\Controllers\HomeController;
 use App\Controllers\NoticiaController;
+use App\Controllers\ProfileController;
 use App\Controllers\RevisaoController;
 use App\Controllers\SolicitacaoController;
+use App\Controllers\UsuarioController;
+use App\Repositories\UsuarioRepository;
 
 class App
 {
     public function run(): void
     {
+        if (session_status() === PHP_SESSION_NONE) {
+            session_start();
+        }
+
+        if (isset($_SESSION['usuario_logado']) && $_SESSION['usuario_logado'] === true && isset($_SESSION['usuario_id'])) {
+            $user = UsuarioRepository::find((int) $_SESSION['usuario_id']);
+            if ($user) {
+                $_SESSION['usuario_nome'] = $user->getNome();
+                $_SESSION['usuario_email'] = $user->getEmail();
+                $_SESSION['usuario_cargo'] = $user->getCargo();
+                $_SESSION['usuario_foto'] = $user->getFoto();
+                $_SESSION['usuario_podeRedigir'] = $user->getPodeRedigir();
+                $_SESSION['usuario_podeRevisar'] = $user->getPodeRevisar();
+                $_SESSION['usuario_isAdmin'] = $user->getIsAdmin();
+            }
+        }
+
         $url = $_GET['url'] ?? '';
         $url = trim($url, '/');
 
@@ -35,6 +56,12 @@ class App
                 $controller->index($segments[1] ?? '');
                 break;
 
+            case 'busca':
+                require_once __DIR__ . '/../Controllers/HomeController.php';
+                $controller = new HomeController();
+                $controller->busca();
+                break;
+
             case 'noticia':
                 require_once __DIR__ . '/../Controllers/NoticiaController.php';
                 $controller = new NoticiaController();
@@ -53,6 +80,10 @@ class App
                     } else {
                         $controller->edit($segments[1]);
                     }
+                } elseif (($segments[2] ?? '') === 'publicar' && is_numeric($segments[1] ?? '')) {
+                    $controller->publicar($segments[1]);
+                } elseif (($segments[2] ?? '') === 'excluir-rascunho' && is_numeric($segments[1] ?? '')) {
+                    $controller->excluirRascunho($segments[1]);
                 } else {
                     require_once __DIR__ . '/../Controllers/HomeController.php';
                     $home = new HomeController();
@@ -121,9 +152,40 @@ class App
                 break;
 
             case 'admin':
-                require_once __DIR__ . '/../Controllers/NoticiaController.php';
-                $controller = new NoticiaController();
-                $controller->index();
+                if (($segments[1] ?? '') === 'usuarios') {
+                    require_once __DIR__ . '/../Controllers/UsuarioController.php';
+                    $controller = new UsuarioController();
+                    if (($segments[2] ?? '') === 'excluir' && ($segments[3] ?? '')) {
+                        $controller->delete($segments[3]);
+                    } else {
+                        $controller->index();
+                    }
+                } elseif (($segments[1] ?? '') === 'noticias') {
+                    $controller = new AdminNoticiaController();
+                    if (($segments[2] ?? '') === 'excluir' && ($segments[3] ?? '')) {
+                        $controller->delete($segments[3]);
+                    } else {
+                        $controller->index();
+                    }
+                } else {
+                    require_once __DIR__ . '/../Controllers/NoticiaController.php';
+                    $controller = new NoticiaController();
+                    $controller->index();
+                }
+                break;
+
+            case 'perfil':
+                require_once __DIR__ . '/../Controllers/ProfileController.php';
+                $controller = new ProfileController();
+                if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+                    if (($segments[1] ?? '') === 'solicitar') {
+                        $controller->solicitar();
+                    } else {
+                        $controller->update();
+                    }
+                } else {
+                    $controller->index();
+                }
                 break;
 
             default:

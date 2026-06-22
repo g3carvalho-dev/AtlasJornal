@@ -105,6 +105,19 @@ class SolicitacaoCargoRepository
         return $lista;
     }
 
+    public static function byUsuarioWithAdmin(int $usuarioId): array
+    {
+        $stmt = Database::getConnection()->prepare(
+            'SELECT sc.*, a.nome AS admin_nome, a.foto AS admin_foto
+             FROM SolicitacaoCargo sc
+             LEFT JOIN Usuario a ON sc.admin_id = a.id
+             WHERE sc.usuario_id = :id
+             ORDER BY sc.dataSolicitacao DESC'
+        );
+        $stmt->execute([':id' => $usuarioId]);
+        return $stmt->fetchAll();
+    }
+
     public static function temPendente(int $usuarioId): bool
     {
         $stmt = Database::getConnection()->prepare(

@@ -71,7 +71,10 @@ $isAdmin = $userCargo === 'administrador';
 
         <div class="search-box">
             <i class="fa-solid fa-magnifying-glass"></i>
-            <input type="text" placeholder="Buscar notícias...">
+            <form action="<?= url('/busca') ;?>" method="GET">
+                <input type="hidden" name="url" value="busca">
+                <input type="text" name="q" placeholder="Buscar notícias...">
+            </form>
         </div>
 
         <div class="logo">
@@ -82,17 +85,18 @@ $isAdmin = $userCargo === 'administrador';
 
         <div class="header-buttons">
             <?php if ($userLogado): ?>
-                <div class="logged-user-info">
-                    <img src="<?= asset($userFoto) ;?>" alt="Foto de perfil" class="user-avatar">
-                    <div class="user-details">
-                        <span class="user-name"><?= e($userNome) ;?></span>
-                        <span class="user-role-label"><?= ucfirst(e($userCargo)) ;?></span>
-                    </div>
-                    <a href="<?= url('/logout') ;?>" class="btn-logout-icon" title="Sair do sistema"><i class="fa-solid fa-right-from-bracket"></i></a>
+            <div class="logged-user-info" style="cursor:pointer" onclick="window.location='<?= url('/perfil') ;?>'">
+                <img src="<?= asset($userFoto) ;?>" alt="Foto de perfil" class="user-avatar">
+                <div class="user-details">
+                    <span class="user-name"><?= e($userNome) ;?></span>
+                    <span class="user-role-label"><?= ucfirst(e($userCargo)) ;?></span>
                 </div>
+                <a href="<?= url('/logout') ;?>" class="btn-logout-icon" title="Sair do sistema"><i
+                        class="fa-solid fa-right-from-bracket"></i></a>
+            </div>
             <?php else: ?>
-                <a href="<?= url('/login') ;?>" class="btn-login">Entrar</a>
-                <a href="<?= url('/cadastro') ;?>" class="btn-cadastro">Cadastrar</a>
+            <a href="<?= url('/login') ;?>" class="btn-login">Entrar</a>
+            <a href="<?= url('/cadastro') ;?>" class="btn-cadastro">Cadastrar</a>
             <?php endif; ?>
         </div>
 
@@ -119,57 +123,67 @@ $isAdmin = $userCargo === 'administrador';
 
     <!-- PAINEL ADMIN -->
     <?php if ($userLogado && $userCargo !== 'leitor'): ?>
-        <div class="admin-panel-topbar">
-            <div class="admin-actions-container">
+    <div class="admin-panel-topbar">
+        <div class="admin-actions-container">
 
-                <?php if ($isRedator): ?>
-                    <a href="<?= url('/noticia/nova') ;?>" class="admin-btn-box">
-                        <i class="fa-solid fa-pen-to-square"></i>
-                        <div>
-                            <strong>Escrever notícia</strong>
-                            <span>Criar uma nova publicação</span>
-                        </div>
-                    </a>
-                <?php endif; ?>
+            <?php if ($isRedator): ?>
+            <a href="<?= url('/noticia/nova') ;?>" class="admin-btn-box">
+                <i class="fa-solid fa-pen-to-square"></i>
+                <div>
+                    <strong>Escrever notícia</strong>
+                    <span>Criar uma nova publicação</span>
+                </div>
+            </a>
+            <?php endif; ?>
 
-                <?php if ($isRevisor): ?>
-                    <a href="<?= url('/revisao') ;?>" class="admin-btn-box">
-                        <i class="fa-solid fa-list-check"></i>
-                        <div>
-                            <strong>Revisar pendentes <span class="admin-badge">0</span></strong>
-                            <span>Itens aguardando revisão</span>
-                        </div>
-                    </a>
-                <?php endif; ?>
+            <?php if ($isRevisor): ?>
+            <a href="<?= url('/revisao') ;?>" class="admin-btn-box">
+                <i class="fa-solid fa-list-check"></i>
+                <div>
+                    <strong>Revisar pendentes <span
+                            class="admin-badge"><?= $isAdmin ? $pendentesRevisao : $meusPendentes ;?></span></strong>
+                    <span><?= $isAdmin ? 'Todas as notícias pendentes' : 'Seus itens aguardando revisão' ;?></span>
+                </div>
+            </a>
+            <?php elseif ($isRedator): ?>
+            <a href="<?= url('/revisao') ;?>" class="admin-btn-box">
+                <i class="fa-solid fa-list-check"></i>
+                <div>
+                    <strong>Minhas revisões <span class="admin-badge"><?= $meusPendentes ;?></span></strong>
+                    <span>Seus itens aguardando revisão</span>
+                </div>
+            </a>
+            <?php endif; ?>
 
-                <?php if ($isRedator): ?>
-                    <a href="<?= url('/noticia/minhas') ;?>" class="admin-btn-box">
-                        <i class="fa-solid fa-book-open"></i>
-                        <div>
-                            <strong>Minhas notícias</strong>
-                            <span>Gerenciar suas publicações</span>
-                        </div>
-                    </a>
-                <?php endif; ?>
+            <?php if ($isRedator): ?>
+            <a href="<?= url('/noticia/minhas') ;?>" class="admin-btn-box">
+                <i class="fa-solid fa-book-open"></i>
+                <div>
+                    <strong>Minhas notícias</strong>
+                    <span>Gerenciar suas publicações</span>
+                </div>
+            </a>
+            <?php endif; ?>
 
-                <?php if ($isAdmin): ?>
-                    <a href="<?= url('/solicitacoes') ;?>" class="admin-btn-box">
-                        <i class="fa-solid fa-user-gear"></i>
-                        <div>
-                            <strong>Solicitações de cargo <span class="admin-badge badge-amber">0</span></strong>
-                            <span>Analisar pedidos de colaboradores</span>
-                        </div>
-                    </a>
-                <?php endif; ?>
+            <?php if ($isAdmin): ?>
+            <a href="<?= url('/solicitacoes') ;?>" class="admin-btn-box">
+                <i class="fa-solid fa-user-gear"></i>
+                <div>
+                    <strong>Solicitações de cargo <span
+                            class="admin-badge badge-amber"><?= $solicitacoesPendentesCount ;?></span></strong>
+                    <span>Analisar pedidos de colaboradores</span>
+                </div>
+            </a>
+            <?php endif; ?>
 
-                <?php if ($isAdmin): ?>
-                    <a href="<?= url('/dashboard') ;?>" class="admin-btn-full-panel">
-                        <i class="fa-solid fa-chart-line"></i> Ver painel completo <i class="fa-solid fa-chevron-right"></i>
-                    </a>
-                <?php endif; ?>
+            <?php if ($isAdmin): ?>
+            <a href="<?= url('/dashboard') ;?>" class="admin-btn-full-panel">
+                <i class="fa-solid fa-chart-line"></i> Ver painel completo <i class="fa-solid fa-chevron-right"></i>
+            </a>
+            <?php endif; ?>
 
-            </div>
         </div>
+    </div>
 
     <?php endif; ?>
 
@@ -184,20 +198,23 @@ $isAdmin = $userCargo === 'administrador';
                     <img src="<?= asset('img/' . $noticia->getImagem()) ;?>" alt="<?= e($noticia->getTitulo()) ;?>">
                 </div>
                 <div class="hero-content">
-                    <a href="<?= url('/categoria/' . urlencode($noticia->getCategoria())) ;?>" class="categoria" style="text-decoration:none;"><?= e($noticia->getCategoria()) ;?></a>
+                    <a href="<?= url('/categoria/' . urlencode($noticia->getCategoria())) ;?>" class="categoria"
+                        style="text-decoration:none;"><?= e($noticia->getCategoria()) ;?></a>
 
                     <?php if ($userLogado && $isRedator): ?>
-                        <div class="inline-management-actions">
-                            <a href="<?= url('/noticia/' . $noticia->getId() . '/editar') ;?>" class="btn-inline-edit"><i class="fa-solid fa-pen"></i> Editar</a>
-                            <?php if ($isRevisor): ?>
-                                <a href="<?= url('/revisao') ;?>" class="btn-inline-admin"><i class="fa-solid fa-shield-halved"></i> Administrar</a>
-                            <?php endif; ?>
-                        </div>
+                    <div class="inline-management-actions">
+                        <a href="<?= url('/noticia/' . $noticia->getId() . '/editar') ;?>" class="btn-inline-edit"><i
+                                class="fa-solid fa-pen"></i> Editar</a>
+                        <?php if ($isRevisor): ?>
+                        <a href="<?= url('/revisao') ;?>" class="btn-inline-admin"><i
+                                class="fa-solid fa-shield-halved"></i> Administrar</a>
+                        <?php endif; ?>
+                    </div>
                     <?php endif; ?>
 
                     <h1><?= e($noticia->getTitulo()) ;?></h1>
                     <p><?= e($noticia->getResumo()) ;?></p>
-                    <a href="<?= url('/noticia/' . $noticia->getId()) ?>" class="btn-materia">LER MATÉRIA COMPLETA</a>
+                    <a href="<?= url('/noticia/' . $noticia->getId()) ;?>" class="btn-materia">LER MATÉRIA COMPLETA</a>
                 </div>
             </article>
             <?php endforeach; ?>
@@ -233,7 +250,7 @@ $isAdmin = $userCargo === 'administrador';
 
             <?php foreach ($nacional as $noticia): ?>
             <div class="card-wrapper">
-                <a href="<?= url('/noticia/' . $noticia->getId()) ?>" class="card card-link">
+                <a href="<?= url('/noticia/' . $noticia->getId()) ;?>" class="card card-link">
                     <div class="card-img-wrapper">
                         <img src="<?= asset('img/' . $noticia->getImagem()) ;?>" alt="<?= e($noticia->getTitulo()) ;?>">
                         <span class="card-categoria-tag"><?= e($noticia->getCategoria()) ;?></span>
@@ -245,9 +262,10 @@ $isAdmin = $userCargo === 'administrador';
                 </a>
 
                 <?php if ($userLogado && $isRevisor): ?>
-                    <div class="card-admin-footer">
-                        <a href="<?= url('/noticia/' . $noticia->getId() . '/editar') ;?>" class="btn-card-manage"><i class="fa-solid fa-gear"></i> Administrar</a>
-                    </div>
+                <div class="card-admin-footer">
+                    <a href="<?= url('/noticia/' . $noticia->getId() . '/editar') ;?>" class="btn-card-manage"><i
+                            class="fa-solid fa-gear"></i> Administrar</a>
+                </div>
                 <?php endif; ?>
             </div>
             <?php endforeach; ?>
@@ -266,7 +284,7 @@ $isAdmin = $userCargo === 'administrador';
 
             <?php foreach ($internacional as $noticia): ?>
             <div class="card-wrapper">
-                <a href="<?= url('/noticia/' . $noticia->getId()) ?>" class="card card-link">
+                <a href="<?= url('/noticia/' . $noticia->getId()) ;?>" class="card card-link">
                     <div class="card-img-wrapper">
                         <img src="<?= asset('img/' . $noticia->getImagem()) ;?>" alt="<?= e($noticia->getTitulo()) ;?>">
                         <span class="card-categoria-tag"><?= e($noticia->getCategoria()) ;?></span>
@@ -278,9 +296,10 @@ $isAdmin = $userCargo === 'administrador';
                 </a>
 
                 <?php if ($userLogado && $isRevisor): ?>
-                    <div class="card-admin-footer">
-                        <a href="<?= url('/noticia/' . $noticia->getId() . '/editar') ;?>" class="btn-card-manage"><i class="fa-solid fa-gear"></i> Administrar</a>
-                    </div>
+                <div class="card-admin-footer">
+                    <a href="<?= url('/noticia/' . $noticia->getId() . '/editar') ;?>" class="btn-card-manage"><i
+                            class="fa-solid fa-gear"></i> Administrar</a>
+                </div>
                 <?php endif; ?>
             </div>
             <?php endforeach; ?>
@@ -317,7 +336,8 @@ $isAdmin = $userCargo === 'administrador';
                     <a class="footer-link-item" href="<?= url('/categoria/' . urlencode('ESPORTES')) ;?>">Esportes</a>
                     <a class="footer-link-item" href="<?= url('/categoria/' . urlencode('CULTURA')) ;?>">Cultura</a>
                     <a class="footer-link-item" href="<?= url('/categoria/' . urlencode('MUNDO')) ;?>">Mundo</a>
-                    <a class="footer-link-item" href="<?= url('/categoria/' . urlencode('TECNOLOGIA')) ;?>">Tecnologia</a>
+                    <a class="footer-link-item"
+                        href="<?= url('/categoria/' . urlencode('TECNOLOGIA')) ;?>">Tecnologia</a>
                 </div>
             </div>
 
@@ -356,8 +376,8 @@ $isAdmin = $userCargo === 'administrador';
     const diasSemana = ["Domingo", "Segunda-feira", "Terça-feira", "Quarta-feira", "Quinta-feira", "Sexta-feira",
         "Sábado"
     ];
-    const meses = ["Janeiro", "Fevereiro", "Março", "Abril", "Maio", "Junho", "Julho", "Agosto", "Setembro", "Outubro",
-        "Novembro", "Dezembro"
+    const meses = ["janeiro", "fevereiro", "março", "abril", "maio", "junho", "julho", "agosto", "setembro", "outubro",
+        "novembro", "dezembro"
     ];
     document.getElementById("data-atual").textContent =
         `${diasSemana[data.getDay()]}, ${data.getDate()} de ${meses[data.getMonth()]} de ${data.getFullYear()}`;

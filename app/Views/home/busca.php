@@ -7,9 +7,6 @@ $userLogado = isset($_SESSION['usuario_logado']) && $_SESSION['usuario_logado'] 
 $userCargo = $_SESSION['usuario_cargo'] ?? 'leitor';
 $userNome = $_SESSION['usuario_nome'] ?? '';
 $userFoto = $_SESSION['usuario_foto'] ?? 'img/avatar_admin.png';
-$isRedator = in_array($userCargo, ['redator', 'revisor', 'administrador']);
-$isRevisor = in_array($userCargo, ['revisor', 'administrador']);
-$isAdmin = $userCargo === 'administrador';
 ?>
 <!DOCTYPE html>
 <html lang="pt-BR">
@@ -18,7 +15,7 @@ $isAdmin = $userCargo === 'administrador';
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title><?= e($noticia->getTitulo()) ;?> - Jornal Atlas</title>
+    <title>Busca: <?= e($termo) ;?> - Jornal Atlas</title>
 
     <link rel="stylesheet" href="<?= asset('css/style.css') ;?>">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
@@ -46,23 +43,17 @@ $isAdmin = $userCargo === 'administrador';
     </div>
 
     <!-- HEADER -->
-
     <header>
-
         <div class="search-box">
             <i class="fa-solid fa-magnifying-glass"></i>
             <form action="<?= url('/busca') ;?>" method="GET">
                 <input type="hidden" name="url" value="busca">
-                <input type="text" name="q" placeholder="Buscar notícias...">
+                <input type="text" name="q" placeholder="Buscar notícias..." value="<?= e($termo) ;?>">
             </form>
         </div>
-
         <div class="logo">
-            <a href="<?= url('/') ;?>">
-                <img src="<?= asset('img/atlas.png') ;?>" alt="Jornal Atlas">
-            </a>
+            <a href="<?= url('/') ;?>"><img src="<?= asset('img/atlas.png') ;?>" alt="Jornal Atlas"></a>
         </div>
-
         <div class="header-buttons">
             <?php if ($userLogado): ?>
             <div class="logged-user-info" style="cursor:pointer" onclick="window.location='<?= url('/perfil') ;?>'">
@@ -71,15 +62,13 @@ $isAdmin = $userCargo === 'administrador';
                     <span class="user-name"><?= e($userNome) ;?></span>
                     <span class="user-role-label"><?= ucfirst(e($userCargo)) ;?></span>
                 </div>
-                <a href="<?= url('/logout') ;?>" class="btn-logout-icon" title="Sair do sistema"><i
-                        class="fa-solid fa-right-from-bracket"></i></a>
             </div>
+            <a href="<?= url('/logout') ;?>" class="btn-logout">Sair</a>
             <?php else: ?>
             <a href="<?= url('/login') ;?>" class="btn-login">Entrar</a>
             <a href="<?= url('/cadastro') ;?>" class="btn-cadastro">Cadastrar</a>
             <?php endif; ?>
         </div>
-
     </header>
 
     <!-- MENU -->
@@ -91,87 +80,59 @@ $isAdmin = $userCargo === 'administrador';
         </ul>
     </nav>
 
-    <!-- CONTEUDO DA NOTICIA -->
-    <main class="noticia-pagina">
-
-        <div class="noticia-container">
+    <!-- RESULTADOS DA BUSCA -->
+    <main class="busca-pagina">
+        <div class="busca-container">
 
             <a href="<?= url('/') ;?>" class="noticia-voltar">
                 <i class="fa-solid fa-arrow-left"></i> Voltar para a Home
             </a>
 
-            <article class="noticia-conteudo">
+            <h1 class="busca-titulo">
+                <i class="fa-solid fa-magnifying-glass"></i>
+                Resultados para: "<?= e($termo) ;?>"
+            </h1>
 
-                <a href="<?= url('/categoria/' . urlencode($noticia->getCategoria())) ;?>" class="noticia-categoria"
-                    style="text-decoration:none;"><?= e($noticia->getCategoria()) ;?></a>
+            <p class="busca-contador">
+                <?= count($resultados) ;?>
+                <?= count($resultados) === 1 ? 'notícia encontrada' : 'notícias encontradas' ;?>
+            </p>
 
-                <span class="noticia-secao">
-                    <i class="fa-regular fa-folder"></i> <?= e($noticia->getSecao()) ;?>
-                </span>
-
-                <h1 class="noticia-titulo"><?= e($noticia->getTitulo()) ;?></h1>
-
-                <div class="noticia-meta">
-                    <span class="noticia-autor">
-                        <i class="fa-solid fa-user-pen"></i>
-                        <?= e($autor->getNome()) ;?>
-                    </span>
-                    <span class="noticia-data">
-                        <i class="fa-regular fa-calendar"></i>
-                        Publicado em <?= format_date($noticia->getDataPublicacao(), 'd/m/Y \à\s H:i') ;?>
-                    </span>
-                    <?php if ($noticia->getDataEdicao()): ?>
-                    <span class="noticia-data">
-                        <i class="fa-regular fa-pen-to-square"></i>
-                        Atualizado em <?= format_date($noticia->getDataEdicao(), 'd/m/Y \à\s H:i') ;?>
-                    </span>
-                    <?php endif; ?>
-                </div>
-
-                <?php if ($noticia->getImagem()): ?>
-                <div class="noticia-imagem-principal">
-                    <img src="<?= asset('img/' . $noticia->getImagem()) ;?>" alt="<?= e($noticia->getTitulo()) ;?>">
-                </div>
-                <?php endif; ?>
-
-                <div class="noticia-resumo">
-                    <?= e($noticia->getResumo()) ;?>
-                </div>
-
-                <div class="noticia-texto">
-                    <?= nl2br(e($noticia->getConteudo())) ;?>
-                </div>
-
-            </article>
+            <?php if (empty($resultados)): ?>
+            <div class="busca-vazio">
+                <i class="fa-regular fa-face-frown"></i>
+                <p>Nenhuma notícia foi encontrada para o termo "<strong><?= e($termo) ;?></strong>".</p>
+                <p>Tente buscar com outras palavras.</p>
+            </div>
+            <?php else: ?>
+            <div class="busca-resultados">
+                <?php foreach ($resultados as $r): ?>
+                <a href="<?= url('/noticia/' . $r['id']) ;?>" class="busca-card">
+                    <div class="busca-card-img">
+                        <?php if ($r['imagem']): ?>
+                        <img src="<?= asset('img/' . $r['imagem']) ;?>" alt="<?= e($r['titulo']) ;?>">
+                        <?php else: ?>
+                        <div class="busca-card-sem-img"><i class="fa-regular fa-newspaper"></i></div>
+                        <?php endif; ?>
+                    </div>
+                    <div class="busca-card-body">
+                        <span class="busca-card-categoria"><?= e($r['categoria']) ;?></span>
+                        <h3><?= e($r['titulo']) ;?></h3>
+                        <p><?= e($r['resumo']) ;?></p>
+                        <div class="busca-card-meta">
+                            <span><i class="fa-solid fa-user-pen"></i>
+                                <?= e($r['autor_nome'] ?? 'Desconhecido') ;?></span>
+                            <span><i class="fa-regular fa-calendar"></i>
+                                <?= format_date(new DateTime($r['dataPublicacao']), 'd/m/Y') ;?></span>
+                        </div>
+                    </div>
+                </a>
+                <?php endforeach; ?>
+            </div>
+            <?php endif; ?>
 
         </div>
-
     </main>
-
-    <!-- RELACIONADAS -->
-    <?php
-$relacionadasFiltradas = array_filter($relacionadas, fn($r) => $r->getId() !== $noticia->getId());
-$relacionadasFiltradas = array_slice($relacionadasFiltradas, 0, 3);
-?>
-
-    <?php if (count($relacionadasFiltradas) > 0): ?>
-    <section class="secao">
-        <h2>Mais notícias</h2>
-        <div class="cards">
-            <?php foreach ($relacionadasFiltradas as $rel): ?>
-            <a href="<?= url('/noticia/' . $rel->getId()) ;?>" class="card card-link">
-                <div class="card-img-wrapper">
-                    <img src="<?= asset('img/' . $rel->getImagem()) ;?>" alt="<?= e($rel->getTitulo()) ;?>">
-                </div>
-                <div class="card-body">
-                    <h3><?= e($rel->getTitulo()) ;?></h3>
-                    <p><?= e($rel->getResumo()) ;?></p>
-                </div>
-            </a>
-            <?php endforeach; ?>
-        </div>
-    </section>
-    <?php endif; ?>
 
     <!-- FOOTER -->
     <footer>
