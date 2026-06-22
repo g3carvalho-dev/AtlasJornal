@@ -2363,7 +2363,7 @@ footer {
 
 .revisao-layout {
     display: grid;
-    grid-template-columns: 1fr 1fr;
+    grid-template-columns: 55fr 45fr;
     gap: 24px;
     align-items: start;
 }
@@ -2376,10 +2376,11 @@ footer {
 }
 
 .revisao-stats-bar {
-    padding: 12px 16px;
+    padding: 14px 20px;
     border-bottom: 1px solid #f0f0f0;
     display: flex;
-    gap: 16px;
+    align-items: center;
+    gap: 20px;
 }
 
 .rev-stat {
@@ -2397,6 +2398,7 @@ footer {
 .revisao-tabela {
     width: 100%;
     border-collapse: collapse;
+    table-layout: fixed;
 }
 
 .revisao-tabela thead th {
@@ -2406,9 +2408,15 @@ footer {
     color: #999;
     letter-spacing: 0.5px;
     text-transform: uppercase;
-    padding: 12px 16px;
+    padding: 14px 20px;
     border-bottom: 2px solid #f0f0f0;
 }
+
+.revisao-tabela thead th:nth-child(1) { width: 30%; }
+.revisao-tabela thead th:nth-child(2) { width: 18%; }
+.revisao-tabela thead th:nth-child(3) { width: 16%; }
+.revisao-tabela thead th:nth-child(4) { width: 14%; }
+.revisao-tabela thead th:nth-child(5) { width: 22%; }
 
 .revisao-tabela tbody tr {
     cursor: pointer;
@@ -2424,7 +2432,7 @@ footer {
 }
 
 .revisao-tabela tbody td {
-    padding: 14px 16px;
+    padding: 16px 20px;
     font-size: 13px;
     color: #333;
     border-bottom: 1px solid #f5f5f5;
@@ -2434,10 +2442,34 @@ footer {
 .td-titulo {
     font-weight: 600;
     color: var(--azul);
-    max-width: 200px;
+}
+
+.td-titulo-texto {
+    display: block;
+    white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
+    max-width: 240px;
+    margin-bottom: 4px;
+}
+
+.td-autor-texto {
+    display: block;
     white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 140px;
+}
+
+.td-data {
+    white-space: nowrap;
+    line-height: 1.4;
+    font-size: 12px;
+}
+
+.td-data small {
+    display: block;
+    color: #999;
 }
 
 .status-badge-status {

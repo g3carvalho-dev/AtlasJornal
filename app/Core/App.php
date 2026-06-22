@@ -84,6 +84,8 @@ class App
                     $controller->publicar($segments[1]);
                 } elseif (($segments[2] ?? '') === 'excluir-rascunho' && is_numeric($segments[1] ?? '')) {
                     $controller->excluirRascunho($segments[1]);
+                } elseif (($segments[2] ?? '') === 'reenviar' && is_numeric($segments[1] ?? '')) {
+                    $controller->reenviar($segments[1]);
                 } else {
                     require_once __DIR__ . '/../Controllers/HomeController.php';
                     $home = new HomeController();

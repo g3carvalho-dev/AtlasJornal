@@ -2,6 +2,7 @@
 
 namespace App\Controllers;
 
+use App\Core\Auth;
 use App\Core\StatusNoticia;
 use App\Models\Noticia;
 use App\Repositories\NoticiaRepository;
@@ -10,31 +11,44 @@ class NoticiaController
 {
     public function create(): void
     {
+        Auth::requireRedator();
         require __DIR__ . '/../Views/noticia/create.php';
     }
 
     public function minhas(): void
     {
-        $redatorId = $_SESSION['usuario_id'] ?? 1;
+        Auth::requireRedator();
+        $redatorId = Auth::id();
         $noticias = NoticiaRepository::byRedator($redatorId);
         require __DIR__ . '/../Views/noticia/minhas.php';
     }
 
     public function edit(string $id): void
     {
+        Auth::requireRedator();
         $noticia = NoticiaRepository::find((int) $id);
         if (!$noticia) {
-            header('Location: ' . url('/'));
+            header('Location: ' . url('/noticia/minhas'));
             exit;
         }
+        if (!Auth::isAdmin() && !Auth::isRevisor() && $noticia->getRedatorId() !== Auth::id()) {
+            header('Location: ' . url('/noticia/minhas'));
+            exit;
+        }
+        $_SESSION['voltar_para'] = $_SERVER['HTTP_REFERER'] ?? url('/noticia/minhas');
         require __DIR__ . '/../Views/noticia/edit.php';
     }
 
     public function update(string $id): void
     {
+        Auth::requireRedator();
         $noticia = NoticiaRepository::find((int) $id);
         if (!$noticia) {
-            header('Location: ' . url('/'));
+            header('Location: ' . url('/noticia/minhas'));
+            exit;
+        }
+        if (!Auth::isAdmin() && !Auth::isRevisor() && $noticia->getRedatorId() !== Auth::id()) {
+            header('Location: ' . url('/noticia/minhas'));
             exit;
         }
 
@@ -75,15 +89,34 @@ class NoticiaController
             }
         }
 
+        $statusAtual = $noticia->getStatus();
+        $acao = $_POST['acao'] ?? 'salvar';
+
+        if ($acao === 'reenviar') {
+            $noticia->setStatus(StatusNoticia::ANALISE);
+        } elseif (in_array($statusAtual, [StatusNoticia::APROVADA, StatusNoticia::REJEITADA, StatusNoticia::ARQUIVADA])) {
+            $noticia->setStatus(StatusNoticia::ANALISE);
+        }
+
         NoticiaRepository::update($noticia);
 
-        $_SESSION['sucesso'] = 'Notícia atualizada com sucesso!';
-        header('Location: ' . url('/noticia/minhas'));
+        if ($acao === 'reenviar') {
+            $_SESSION['sucesso'] = 'Notícia salva e reenviada para revisão!';
+        } else {
+            $_SESSION['sucesso'] = 'Notícia atualizada com sucesso!';
+        }
+        if ((Auth::isAdmin() || Auth::isRevisor()) && $noticia->getRedatorId() !== Auth::id()) {
+            header('Location: ' . url('/revisao?noticia=' . $id));
+        } else {
+            header('Location: ' . url('/noticia/minhas'));
+        }
         exit;
     }
 
     public function store(): void
     {
+        Auth::requireRedator();
+
         $titulo = trim($_POST['titulo'] ?? '');
         $categoria = trim($_POST['categoria'] ?? '');
         $secao = trim($_POST['secao'] ?? '');
@@ -145,7 +178,7 @@ class NoticiaController
 
         $noticia = new Noticia(
             0,
-            (int) $_SESSION['usuario_id'],
+            Auth::id(),
             $titulo,
             $resumo,
             $conteudo,
@@ -170,8 +203,9 @@ class NoticiaController
 
     public function publicar(string $id): void
     {
+        Auth::requireRedator();
         $noticia = NoticiaRepository::find((int) $id);
-        if (!$noticia || $noticia->getStatus() !== StatusNoticia::RASCUNHO) {
+        if (!$noticia || $noticia->getRedatorId() !== Auth::id() || $noticia->getStatus() !== StatusNoticia::RASCUNHO) {
             header('Location: ' . url('/noticia/minhas'));
             exit;
         }
@@ -185,8 +219,9 @@ class NoticiaController
 
     public function excluirRascunho(string $id): void
     {
+        Auth::requireRedator();
         $noticia = NoticiaRepository::find((int) $id);
-        if (!$noticia || $noticia->getStatus() !== StatusNoticia::RASCUNHO) {
+        if (!$noticia || $noticia->getRedatorId() !== Auth::id() || $noticia->getStatus() !== StatusNoticia::RASCUNHO) {
             header('Location: ' . url('/noticia/minhas'));
             exit;
         }
@@ -194,6 +229,27 @@ class NoticiaController
         NoticiaRepository::delete((int) $id);
 
         $_SESSION['sucesso'] = 'Rascunho excluído com sucesso!';
+        header('Location: ' . url('/noticia/minhas'));
+        exit;
+    }
+
+    public function reenviar(string $id): void
+    {
+        Auth::requireRedator();
+        $noticia = NoticiaRepository::find((int) $id);
+        if (!$noticia || $noticia->getRedatorId() !== Auth::id()) {
+            header('Location: ' . url('/noticia/minhas'));
+            exit;
+        }
+
+        if (!in_array($noticia->getStatus(), [StatusNoticia::REJEITADA, StatusNoticia::ARQUIVADA])) {
+            header('Location: ' . url('/noticia/minhas'));
+            exit;
+        }
+
+        NoticiaRepository::updateStatus((int) $id, StatusNoticia::ANALISE);
+
+        $_SESSION['sucesso'] = 'Notícia reenviada para revisão!';
         header('Location: ' . url('/noticia/minhas'));
         exit;
     }

@@ -3,6 +3,7 @@
 }
 ?>
 <?php
+use App\Core\StatusNoticia;
 $userLogado = isset($_SESSION['usuario_logado']) && $_SESSION['usuario_logado'] === true;
 $userCargo = $_SESSION['usuario_cargo'] ?? 'leitor';
 $userNome = $_SESSION['usuario_nome'] ?? '';
@@ -54,13 +55,13 @@ unset($_SESSION['sucesso']);
         </div>
         <div class="header-buttons">
             <?php if ($userLogado): ?>
-            <div class="logged-user-info">
+            <div class="logged-user-info" style="cursor:pointer" onclick="window.location='<?= url('/perfil') ;?>'">
                 <img src="<?= asset($userFoto) ;?>" alt="Foto de perfil" class="user-avatar">
                 <div class="user-details">
                     <span class="user-name"><?= e($userNome) ;?></span>
                     <span class="user-role-label"><?= ucfirst(e($userCargo)) ;?></span>
                 </div>
-                <a href="<?= url('/logout') ;?>" class="btn-logout-icon" title="Sair"><i
+                <a href="<?= url('/logout') ;?>" class="btn-logout-icon" title="Sair" onclick="event.stopPropagation()"><i
                         class="fa-solid fa-right-from-bracket"></i></a>
             </div>
             <?php else: ?>
@@ -101,37 +102,80 @@ unset($_SESSION['sucesso']);
 
         <div class="revisao-layout">
             <div class="revisao-lista">
+                <?php
+                $pendentesCount = 0;
+                $revisadasCount = 0;
+                $statusLabels = [
+                    'RASCUNHO' => 'RASCUNHO',
+                    'EM_ANALISE' => 'EM ANÁLISE',
+                    'APROVADA' => 'APROVADA',
+                    'ARQUIVADA' => 'ARQUIVADA',
+                    'REJEITADA' => 'REJEITADA',
+                ];
+                $acaoLabels = [
+                    'APROVAR' => 'Aprovada',
+                    'REJEITAR' => 'Rejeitada',
+                    'ARQUIVAR' => 'Arquivada',
+                ];
+                foreach ($noticias as $row) {
+                    if ($row['status'] === StatusNoticia::ANALISE->value) {
+                        $pendentesCount++;
+                    } else {
+                        $revisadasCount++;
+                    }
+                }
+                ?>
                 <div class="revisao-stats-bar">
-                    <span class="rev-stat pendente"><i class="fa-regular fa-clock"></i> <?= count($noticias) ;?>
+                    <span class="rev-stat pendente"><i class="fa-regular fa-clock"></i> <?= $pendentesCount ;?>
                         pendentes</span>
+                    <span class="rev-stat" style="margin-left:12px; color:#94a3b8;"><i class="fa-solid fa-check-double"></i> <?= $revisadasCount ;?>
+                        revisadas</span>
                 </div>
 
                 <?php if (empty($noticias)): ?>
                 <div class="revisao-vazio">
                     <i class="fa-regular fa-circle-check"></i>
-                    <p>Nenhuma notícia pendente de revisão.</p>
+                    <p>Nenhuma notícia pendente ou revisada.</p>
                 </div>
                 <?php else: ?>
                 <table class="revisao-tabela">
                     <thead>
                         <tr>
-                            <th>TÍTULO</th>
-                            <th>CATEGORIA</th>
+                            <th>NOTÍCIA</th>
                             <th>AUTOR</th>
-                            <th>ENVIADO EM</th>
                             <th>STATUS</th>
+                            <th>ÚLTIMA AÇÃO</th>
+                            <th>DATA</th>
                         </tr>
                     </thead>
                     <tbody>
-                        <?php foreach ($noticias as $row): ?>
+                        <?php foreach ($noticias as $row):
+                            $rev = $ultimaRevisaoPorNoticia[$row['id']] ?? null;
+                        ?>
                         <tr class="<?= ($noticiaSelecionada && $noticiaSelecionada->getId() == $row['id']) ? 'selecionada' : '' ;?>"
                             onclick="window.location='<?= url('/revisao?noticia=' . $row['id']) ;?>'">
-                            <td class="td-titulo"><?= e($row['titulo']) ;?></td>
-                            <td><?= e($row['categoria']) ;?></td>
-                            <td><?= e($row['autor_nome']) ;?></td>
-                            <td><?= date('d/m/Y', strtotime($row['dataCriacao'])) ;?><br><small><?= date('H:i', strtotime($row['dataCriacao'])) ;?></small>
+                            <td class="td-titulo">
+                                <span class="td-titulo-texto"><?= e($row['titulo']) ;?></span>
+                                <span class="dash-categoria-tag"><?= e($row['categoria']) ;?></span>
                             </td>
-                            <td><span class="status-badge-status status-em-analise">EM ANÁLISE</span></td>
+                            <td class="td-autor">
+                                <span class="td-autor-texto"><?= e($row['autor_nome']) ;?></span>
+                            </td>
+                            <td>
+                                <?php $statusCls = strtolower(str_replace('_', '-', $row['status'])); ?>
+                                <span class="status-badge-status status-<?= $statusCls ;?>"><?= $statusLabels[$row['status']] ?? $row['status'] ;?></span>
+                            </td>
+                            <td>
+                                <?php if ($rev): ?>
+                                    <?= $acaoLabels[$rev['acaoRealizada']] ?? $rev['acaoRealizada'] ;?>
+                                <?php else: ?>
+                                    <span style="color:#64748b;">—</span>
+                                <?php endif; ?>
+                            </td>
+                            <td class="td-data">
+                                <?= date('d/m/Y', strtotime($row['dataCriacao'])) ;?>
+                                <small><?= date('H:i', strtotime($row['dataCriacao'])) ;?></small>
+                            </td>
                         </tr>
                         <?php endforeach; ?>
                     </tbody>
@@ -141,10 +185,15 @@ unset($_SESSION['sucesso']);
 
             <div class="revisao-preview">
                 <?php if ($noticiaSelecionada): ?>
+                <?php
+                    $statusSelecionada = $noticiaSelecionada->getStatus()->value;
+                    $statusClsSel = strtolower(str_replace('_', '-', $statusSelecionada));
+                    $revSelecionada = $ultimaRevisaoPorNoticia[$noticiaSelecionada->getId()] ?? null;
+                ?>
                 <div class="preview-cabecalho">
                     <div>
                         <span class="preview-categoria"><?= e($noticiaSelecionada->getCategoria()) ;?></span>
-                        <span class="preview-status-badge">EM ANÁLISE</span>
+                        <span class="preview-status-badge status-<?= $statusClsSel ;?>"><?= $statusLabels[$statusSelecionada] ?? $statusSelecionada ;?></span>
                     </div>
                 </div>
 
@@ -178,7 +227,43 @@ unset($_SESSION['sucesso']);
                 <?php unset($_SESSION['erro']); ?>
                 <?php endif; ?>
 
-                <form class="revisao-form" method="POST" action="">
+                <?php
+                $todasRevisoes = \App\Repositories\RevisaoRepository::byNoticia($noticiaSelecionada->getId());
+                ?>
+                <?php if (!empty($todasRevisoes)): ?>
+                <div style="margin-top:20px; margin-bottom:20px;">
+                    <h3 style="font-family:'Playfair Display',serif; font-size:17px; margin-bottom:10px;">
+                        <i class="fa-solid fa-clock-rotate-left"></i> Histórico de Revisões
+                    </h3>
+                    <?php foreach ($todasRevisoes as $revHistorico):
+                        $acaoLabel = $acaoLabels[$revHistorico->getAcao()->value] ?? $revHistorico->getAcao()->value;
+                        $revisor = \App\Repositories\UsuarioRepository::find($revHistorico->getRevisorId());
+                    ?>
+                    <div style="background:rgba(255,255,255,0.05); border:1px solid rgba(255,255,255,0.1); border-radius:10px; padding:14px; margin-bottom:10px;">
+                        <div style="display:flex; align-items:center; gap:10px; margin-bottom:6px;">
+                            <img src="<?= asset($revisor ? $revisor->getFoto() : 'img/avatar_admin.png') ;?>" alt="" style="width:28px; height:28px; border-radius:50%; object-fit:cover;">
+                            <strong style="font-size:13px;"><?= e($revisor ? $revisor->getNome() : 'Desconhecido') ;?></strong>
+                            <span class="dash-status <?= strtolower(str_replace('_', '-', $revHistorico->getAcao()->value)) ;?>"><?= $acaoLabel ;?></span>
+                            <span style="margin-left:auto; color:#94a3b8; font-size:12px;">
+                                <?= format_date($revHistorico->getDataRevisao(), 'd/m/Y \à\s H:i') ;?>
+                            </span>
+                        </div>
+                        <?php if ($revHistorico->getObservacao()): ?>
+                        <p style="color:#cbd5e1; font-size:13px; margin:0; line-height:1.5;">
+                            "<?= e($revHistorico->getObservacao()) ;?>"
+                        </p>
+                        <?php else: ?>
+                        <p style="color:#64748b; font-size:12px; font-style:italic; margin:0;">
+                            Nenhuma observação registrada.
+                        </p>
+                        <?php endif; ?>
+                    </div>
+                    <?php endforeach; ?>
+                </div>
+                <?php endif; ?>
+
+                <?php if ($statusSelecionada === StatusNoticia::ANALISE->value && $podeAprovar): ?>
+                <form class="revisao-form" method="POST" action="<?= url('/revisao/aprovar/' . $noticiaSelecionada->getId()) ;?>">
                     <div class="revisao-observacao">
                         <label>Observação ao redator <span class="opcional">(opcional)</span></label>
                         <textarea name="observacao" rows="3"
@@ -186,7 +271,6 @@ unset($_SESSION['sucesso']);
                         <small>Seu comentário será visível para o autor do artigo.</small>
                     </div>
 
-                    <?php if ($podeAprovar): ?>
                     <div class="revisao-botoes">
                         <a href="<?= url('/noticia/' . $noticiaSelecionada->getId() . '/editar') ;?>"
                             class="btn-rev btn-editar">
@@ -208,7 +292,8 @@ unset($_SESSION['sucesso']);
                             <i class="fa-solid fa-check"></i> APROVAR
                         </button>
                     </div>
-                    <?php else: ?>
+                </form>
+                <?php elseif ($statusSelecionada === StatusNoticia::ANALISE->value && !$podeAprovar): ?>
                     <div class="revisao-aviso" style="margin-top:16px;">
                         <i class="fa-solid fa-ban"></i>
                         <div>
@@ -216,8 +301,7 @@ unset($_SESSION['sucesso']);
                             <span>A aprovação por outro revisor ou administrador é obrigatória.</span>
                         </div>
                     </div>
-                    <?php endif; ?>
-                </form>
+                <?php endif; ?>
                 <?php else: ?>
                 <div class="preview-vazio">
                     <i class="fa-regular fa-newspaper"></i>
@@ -280,6 +364,13 @@ unset($_SESSION['sucesso']);
     ];;
     document.getElementById("data-atual").textContent =
         `${diasSemana[data.getDay()]}, ${data.getDate()} de ${meses[data.getMonth()]} de ${data.getFullYear()}`;
+
+    document.querySelectorAll('.revisao-form').forEach(function(form) {
+        form.addEventListener('submit', function() {
+            var btns = this.querySelectorAll('button[type="submit"]');
+            btns.forEach(function(btn) { btn.disabled = true; });
+        });
+    });
     </script>
 </body>
 

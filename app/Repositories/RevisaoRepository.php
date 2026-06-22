@@ -42,6 +42,37 @@ class RevisaoRepository
         return $lista;
     }
 
+    public static function pendentesEHistorico(int $revisorId): array
+    {
+        $stmt = Database::getConnection()->prepare(
+            'SELECT n.*, u.nome AS autor_nome, u.email AS autor_email
+             FROM Noticia n
+             JOIN Usuario u ON n.redator_id = u.id
+             WHERE n.status = :analise
+                OR n.id IN (SELECT noticia_id FROM Revisao WHERE revisor_id = :revisorId)
+             ORDER BY n.dataCriacao DESC'
+        );
+        $stmt->execute([
+            ':analise' => StatusNoticia::ANALISE->value,
+            ':revisorId' => $revisorId,
+        ]);
+        return $stmt->fetchAll();
+    }
+
+    public static function latestReviewForNoticia(int $noticiaId): ?array
+    {
+        $stmt = Database::getConnection()->prepare(
+            'SELECT r.*, u.nome AS revisor_nome
+             FROM Revisao r
+             JOIN Usuario u ON r.revisor_id = u.id
+             WHERE r.noticia_id = :id
+             ORDER BY r.dataRevisao DESC LIMIT 1'
+        );
+        $stmt->execute([':id' => $noticiaId]);
+        $row = $stmt->fetch();
+        return $row ?: null;
+    }
+
     public static function pendentesCount(): int
     {
         $stmt = Database::getConnection()->query(
@@ -109,6 +140,21 @@ class RevisaoRepository
         );
         $stmt->execute([':id' => $revisorId]);
         return (int) $stmt->fetchColumn();
+    }
+
+    public static function reviewsForRedator(int $redatorId): array
+    {
+        $stmt = Database::getConnection()->prepare(
+            'SELECT r.*, n.titulo, n.imagem, n.categoria, n.status AS noticia_status,
+                    u.nome AS revisor_nome, u.foto AS revisor_foto
+             FROM Revisao r
+             JOIN Noticia n ON r.noticia_id = n.id
+             JOIN Usuario u ON r.revisor_id = u.id
+             WHERE n.redator_id = :redatorId
+             ORDER BY r.dataRevisao DESC'
+        );
+        $stmt->execute([':redatorId' => $redatorId]);
+        return $stmt->fetchAll();
     }
 
     private static function hydrate(array $row): Revisao

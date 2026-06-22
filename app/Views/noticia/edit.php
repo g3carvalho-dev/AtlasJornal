@@ -77,7 +77,7 @@ unset($_SESSION['errors']);
                             <label class="form-label">Categoria <span class="obrigatorio">*</span></label>
                             <select class="form-select" name="categoria" required>
                                 <option value="">Selecione</option>
-                                <?php foreach (['Política','Tecnologia','Economia','Esportes','Mundo','Cultura','Educação','Saúde','Entretenimento'] as $cat): ?>
+                                <?php foreach (['Política','Tecnologia','Economia','Esportes','Mundo','Cultura','Saúde','Ciência'] as $cat): ?>
                                     <option value="<?= $cat ;?>" <?= $noticia->getCategoria() === $cat ? 'selected' : '' ;?> ><?= $cat ;?></option>
                                 <?php endforeach; ?>
                             </select>
@@ -123,7 +123,7 @@ unset($_SESSION['errors']);
                     </div>
 
                     <div class="create-actions">
-                        <a href="<?= url('/noticia/minhas') ;?>" class="btn-action btn-cancelar">
+                        <a href="<?= e($_SESSION['voltar_para'] ?? url('/noticia/minhas')) ;?>" class="btn-action btn-cancelar">
                             <i class="fa-solid fa-xmark"></i> Cancelar
                         </a>
                         <div class="create-actions-direita">
@@ -137,6 +137,11 @@ unset($_SESSION['errors']);
                             <a href="<?= url('/noticia/' . $noticia->getId() . '/publicar') ;?>" class="btn-action btn-publicar" onclick="return confirm('Enviar esta notícia para revisão?')">
                                 <i class="fa-solid fa-paper-plane"></i> Publicar
                             </a>
+                            <?php endif; ?>
+                            <?php if (in_array($noticia->getStatus()->value, ['REJEITADA', 'ARQUIVADA'])): ?>
+                            <button type="submit" name="acao" value="reenviar" class="btn-action btn-publicar" onclick="return confirm('Salvar alterações e reenviar esta notícia para revisão?')">
+                                <i class="fa-solid fa-paper-plane"></i> Reenviar para Análise
+                            </button>
                             <?php endif; ?>
                             <button type="submit" class="btn-action btn-salvar">
                                 <i class="fa-solid fa-floppy-disk"></i> Salvar Alterações
@@ -215,6 +220,12 @@ unset($_SESSION['errors']);
             uploadPreview.style.display = 'none';
         });
     }
+    </script>
+    <script>
+    document.querySelector('form[enctype]').addEventListener('submit', function() {
+        const btns = this.querySelectorAll('button[type="submit"]');
+        btns.forEach(function(btn) { btn.disabled = true; });
+    });
     </script>
 </body>
 </html>

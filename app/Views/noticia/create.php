@@ -468,6 +468,14 @@ foreach ($secs as $val => $label):
     // Checklist inicial
     updateChecklist();
     updateContadorPalavras();
+
+    // Prevenir duplo envio
+    document.getElementById('form-noticia').addEventListener('submit', function() {
+        const btns = this.querySelectorAll('button[type="submit"]');
+        btns.forEach(function(btn) {
+            btn.disabled = true;
+        });
+    });
     </script>
 
 </body>

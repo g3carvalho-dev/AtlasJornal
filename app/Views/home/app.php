@@ -145,14 +145,6 @@ $isAdmin = $userCargo === 'administrador';
                     <span><?= $isAdmin ? 'Todas as notícias pendentes' : 'Seus itens aguardando revisão' ;?></span>
                 </div>
             </a>
-            <?php elseif ($isRedator): ?>
-            <a href="<?= url('/revisao') ;?>" class="admin-btn-box">
-                <i class="fa-solid fa-list-check"></i>
-                <div>
-                    <strong>Minhas revisões <span class="admin-badge"><?= $meusPendentes ;?></span></strong>
-                    <span>Seus itens aguardando revisão</span>
-                </div>
-            </a>
             <?php endif; ?>
 
             <?php if ($isRedator): ?>
@@ -176,7 +168,7 @@ $isAdmin = $userCargo === 'administrador';
             </a>
             <?php endif; ?>
 
-            <?php if ($isAdmin): ?>
+            <?php if ($isRedator): ?>
             <a href="<?= url('/dashboard') ;?>" class="admin-btn-full-panel">
                 <i class="fa-solid fa-chart-line"></i> Ver painel completo <i class="fa-solid fa-chevron-right"></i>
             </a>
@@ -201,13 +193,15 @@ $isAdmin = $userCargo === 'administrador';
                     <a href="<?= url('/categoria/' . urlencode($noticia->getCategoria())) ;?>" class="categoria"
                         style="text-decoration:none;"><?= e($noticia->getCategoria()) ;?></a>
 
-                    <?php if ($userLogado && $isRedator): ?>
+                    <?php if (($userLogado && $isRedator && $noticia->getRedatorId() == ($_SESSION['usuario_id'] ?? 0)) || $isRevisor): ?>
                     <div class="inline-management-actions">
+                        <?php if ($noticia->getRedatorId() == ($_SESSION['usuario_id'] ?? 0) || $isRevisor): ?>
                         <a href="<?= url('/noticia/' . $noticia->getId() . '/editar') ;?>" class="btn-inline-edit"><i
                                 class="fa-solid fa-pen"></i> Editar</a>
-                        <?php if ($isRevisor): ?>
-                        <a href="<?= url('/revisao') ;?>" class="btn-inline-admin"><i
-                                class="fa-solid fa-shield-halved"></i> Administrar</a>
+                        <?php endif; ?>
+                        <?php if ($isAdmin): ?>
+                        <a href="<?= url('/admin/noticias?noticia=' . $noticia->getId()) ;?>"
+                            class="btn-inline-admin"><i class="fa-solid fa-shield-halved"></i> Administrar</a>
                         <?php endif; ?>
                     </div>
                     <?php endif; ?>
@@ -264,7 +258,7 @@ $isAdmin = $userCargo === 'administrador';
                 <?php if ($userLogado && $isRevisor): ?>
                 <div class="card-admin-footer">
                     <a href="<?= url('/noticia/' . $noticia->getId() . '/editar') ;?>" class="btn-card-manage"><i
-                            class="fa-solid fa-gear"></i> Administrar</a>
+                            class="fa-solid fa-gear"></i> Editar</a>
                 </div>
                 <?php endif; ?>
             </div>
@@ -298,7 +292,7 @@ $isAdmin = $userCargo === 'administrador';
                 <?php if ($userLogado && $isRevisor): ?>
                 <div class="card-admin-footer">
                     <a href="<?= url('/noticia/' . $noticia->getId() . '/editar') ;?>" class="btn-card-manage"><i
-                            class="fa-solid fa-gear"></i> Administrar</a>
+                            class="fa-solid fa-gear"></i> Editar</a>
                 </div>
                 <?php endif; ?>
             </div>

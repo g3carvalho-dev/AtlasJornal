@@ -2,6 +2,7 @@
 
 namespace App\Controllers;
 
+use App\Core\Auth;
 use App\Core\StatusSolicitacao;
 use App\Repositories\SolicitacaoCargoRepository;
 use App\Repositories\UsuarioRepository;
@@ -10,6 +11,7 @@ class SolicitacaoController
 {
     public function index(): void
     {
+        Auth::requireAdmin();
         $solicitacoes = SolicitacaoCargoRepository::allWithUser();
         $stats = SolicitacaoCargoRepository::stats();
         $selecionada = null;
@@ -28,6 +30,7 @@ class SolicitacaoController
 
     public function aprovar(string $id): void
     {
+        Auth::requireAdmin();
         $sol = SolicitacaoCargoRepository::find((int) $id);
         if (!$sol) {
             header('Location: ' . url('/solicitacoes'));
@@ -35,7 +38,7 @@ class SolicitacaoController
         }
 
         $observacao = trim($_POST['observacao'] ?? '');
-        $adminId = $_SESSION['usuario_id'] ?? 1;
+        $adminId = Auth::id();
 
         SolicitacaoCargoRepository::responder((int) $id, StatusSolicitacao::APROVADA, $adminId, $observacao ?: null);
 
@@ -55,6 +58,7 @@ class SolicitacaoController
 
     public function rejeitar(string $id): void
     {
+        Auth::requireAdmin();
         $sol = SolicitacaoCargoRepository::find((int) $id);
         if (!$sol) {
             header('Location: ' . url('/solicitacoes'));
@@ -62,7 +66,7 @@ class SolicitacaoController
         }
 
         $observacao = trim($_POST['observacao'] ?? '');
-        $adminId = $_SESSION['usuario_id'] ?? 1;
+        $adminId = Auth::id();
 
         SolicitacaoCargoRepository::responder((int) $id, StatusSolicitacao::REJEITADA, $adminId, $observacao ?: null);
 

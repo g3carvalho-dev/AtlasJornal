@@ -2,6 +2,7 @@
 
 namespace App\Controllers;
 
+use App\Core\Auth;
 use App\Core\AcaoRevisao;
 use App\Core\StatusNoticia;
 use App\Models\Revisao;
@@ -12,44 +13,66 @@ class RevisaoController
 {
     public function index(): void
     {
-        $userCargo = $_SESSION['usuario_cargo'] ?? 'leitor';
-        $userId = $_SESSION['usuario_id'] ?? 0;
-        $isRevisorOuAdmin = in_array($userCargo, ['revisor', 'administrador']);
+        Auth::requireLogin();
+        $userId = Auth::id();
+        $isAdmin = Auth::isAdmin();
+        $isRevisor = Auth::isRevisor();
 
-        if ($isRevisorOuAdmin) {
-            $noticias = RevisaoRepository::pendingWithAuthor();
-        } else {
-            $noticias = NoticiaRepository::pendingByRedatorWithAuthor($userId);
-        }
+        if ($isAdmin || $isRevisor) {
+            $noticias = RevisaoRepository::pendentesEHistorico($userId);
 
-        $noticiaSelecionada = null;
-        $autorNoticia = null;
-        $podeAprovar = false;
-
-        $noticiaId = $_GET['noticia'] ?? null;
-        if ($noticiaId) {
-            $noticiaSelecionada = NoticiaRepository::find((int) $noticiaId);
-            if ($noticiaSelecionada) {
-                $autorNoticia = \App\Repositories\UsuarioRepository::find($noticiaSelecionada->getRedatorId());
-                $revisorId = $_SESSION['usuario_id'] ?? 0;
-                $isAdmin = ($_SESSION['usuario_cargo'] ?? '') === 'administrador';
-                $podeAprovar = $isAdmin || ($noticiaSelecionada->getRedatorId() !== $revisorId);
+            $ultimaRevisaoPorNoticia = [];
+            foreach ($noticias as $row) {
+                $ultimaRevisaoPorNoticia[$row['id']] = RevisaoRepository::latestReviewForNoticia((int) $row['id']);
             }
-        }
 
-        require __DIR__ . '/../Views/revisao/index.php';
+            $noticiaSelecionada = null;
+            $autorNoticia = null;
+            $podeAprovar = false;
+
+            $noticiaId = $_GET['noticia'] ?? null;
+            if ($noticiaId) {
+                $noticiaSelecionada = NoticiaRepository::find((int) $noticiaId);
+                if ($noticiaSelecionada) {
+                    $autorNoticia = \App\Repositories\UsuarioRepository::find($noticiaSelecionada->getRedatorId());
+                    $podeAprovar = $isAdmin || ($noticiaSelecionada->getRedatorId() !== $userId);
+                }
+            }
+
+            require __DIR__ . '/../Views/revisao/index.php';
+        } else {
+            $minhasNoticias = NoticiaRepository::byRedator($userId);
+            $revisoesPorNoticia = [];
+            foreach ($minhasNoticias as $noticia) {
+                $revisoesPorNoticia[$noticia->getId()] = RevisaoRepository::byNoticia($noticia->getId());
+            }
+            $noticiaSelecionada = null;
+            $revisoesNoticia = [];
+            $noticiaId = $_GET['noticia'] ?? null;
+            if ($noticiaId) {
+                foreach ($minhasNoticias as $n) {
+                    if ((int) $n->getId() === (int) $noticiaId) {
+                        $noticiaSelecionada = $n;
+                        $revisoesNoticia = RevisaoRepository::byNoticia($n->getId());
+                        break;
+                    }
+                }
+            }
+            require __DIR__ . '/../Views/revisao/minhas.php';
+        }
     }
 
     public function aprovar(string $id): void
     {
+        Auth::requireRevisor();
         $noticia = NoticiaRepository::find((int) $id);
         if (!$noticia) {
             header('Location: ' . url('/revisao'));
             exit;
         }
 
-        $revisorId = $_SESSION['usuario_id'] ?? 0;
-        $isAdmin = ($_SESSION['usuario_cargo'] ?? '') === 'administrador';
+        $revisorId = Auth::id();
+        $isAdmin = Auth::isAdmin();
 
         if ($noticia->getRedatorId() === $revisorId && !$isAdmin) {
             $_SESSION['erro'] = 'Você não pode aprovar seu próprio artigo.';
@@ -63,6 +86,7 @@ class RevisaoController
         RevisaoRepository::create($revisao);
 
         $noticia->setStatus(StatusNoticia::APROVADA);
+        $noticia->setDataPublicacao(new \DateTime());
         NoticiaRepository::update($noticia);
 
         $_SESSION['sucesso'] = 'Notícia aprovada com sucesso!';
@@ -72,14 +96,23 @@ class RevisaoController
 
     public function rejeitar(string $id): void
     {
+        Auth::requireRevisor();
         $noticia = NoticiaRepository::find((int) $id);
         if (!$noticia) {
             header('Location: ' . url('/revisao'));
             exit;
         }
 
+        $revisorId = Auth::id();
+        $isAdmin = Auth::isAdmin();
+
+        if ($noticia->getRedatorId() === $revisorId && !$isAdmin) {
+            $_SESSION['erro'] = 'Você não pode rejeitar seu próprio artigo.';
+            header('Location: ' . url('/revisao?noticia=' . $id));
+            exit;
+        }
+
         $observacao = trim($_POST['observacao'] ?? '');
-        $revisorId = $_SESSION['usuario_id'] ?? 1;
 
         $revisao = new Revisao(0, $revisorId, (int) $id, AcaoRevisao::REJEITAR, new \DateTime(), $observacao ?: null);
         RevisaoRepository::create($revisao);
@@ -94,14 +127,23 @@ class RevisaoController
 
     public function arquivar(string $id): void
     {
+        Auth::requireRevisor();
         $noticia = NoticiaRepository::find((int) $id);
         if (!$noticia) {
             header('Location: ' . url('/revisao'));
             exit;
         }
 
+        $revisorId = Auth::id();
+        $isAdmin = Auth::isAdmin();
+
+        if ($noticia->getRedatorId() === $revisorId && !$isAdmin) {
+            $_SESSION['erro'] = 'Você não pode arquivar seu próprio artigo.';
+            header('Location: ' . url('/revisao?noticia=' . $id));
+            exit;
+        }
+
         $observacao = trim($_POST['observacao'] ?? '');
-        $revisorId = $_SESSION['usuario_id'] ?? 1;
 
         $revisao = new Revisao(0, $revisorId, (int) $id, AcaoRevisao::ARQUIVAR, new \DateTime(), $observacao ?: null);
         RevisaoRepository::create($revisao);

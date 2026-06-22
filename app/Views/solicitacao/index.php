@@ -350,6 +350,13 @@ $jaResolvida = $selecionada->getStatus()->value !== 'EM_ANALISE';
     ];
     document.getElementById("data-atual").textContent =
         `${diasSemana[data.getDay()]}, ${data.getDate()} de ${meses[data.getMonth()]} de ${data.getFullYear()}`;
+
+    document.querySelectorAll('.solicitacao-form').forEach(function(form) {
+        form.addEventListener('submit', function() {
+            var btns = this.querySelectorAll('button[type="submit"]');
+            btns.forEach(function(btn) { btn.disabled = true; });
+        });
+    });
     </script>
 </body>
 

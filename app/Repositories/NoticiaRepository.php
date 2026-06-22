@@ -149,6 +149,7 @@ class NoticiaRepository
                 imagem = :imagem,
                 categoria = :categoria,
                 secao = :secao,
+                status = :status,
                 dataEdicao = NOW()
             WHERE id = :id'
         );
@@ -161,6 +162,7 @@ class NoticiaRepository
             ':imagem' => $noticia->getImagem(),
             ':categoria' => $noticia->getCategoria(),
             ':secao' => $noticia->getSecao(),
+            ':status' => $noticia->getStatus()->value,
         ]);
     }
 

@@ -5,13 +5,16 @@ $userCargo = $_SESSION['usuario_cargo'] ?? 'leitor';
 $userNome = $_SESSION['usuario_nome'] ?? '';
 $userFoto = $_SESSION['usuario_foto'] ?? 'img/avatar_admin.png';
 $userEmail = $_SESSION['usuario_email'] ?? '';
+$isAdmin = $userCargo === 'administrador';
+$isRevisor = in_array($userCargo, ['revisor', 'administrador']);
+$isRedator = in_array($userCargo, ['redator', 'revisor', 'administrador']);
 ?>
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Painel Administrativo - Jornal Atlas</title>
+    <title>Painel - Jornal Atlas</title>
     <link rel="stylesheet" href="<?= asset('css/style.css') ;?>">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
@@ -26,13 +29,15 @@ $userEmail = $_SESSION['usuario_email'] ?? '';
             <a href="<?= url('/dashboard') ;?>" class="dash-nav-item active">
                 <i class="fa-solid fa-house"></i> Dashboard
             </a>
+            <?php if ($isAdmin || $isRevisor): ?>
             <a href="<?= url('/admin/noticias') ;?>" class="dash-nav-item">
                 <i class="fa-solid fa-newspaper"></i> Notícias
             </a>
+            <?php endif; ?>
             <a href="<?= url('/revisao') ;?>" class="dash-nav-item">
                 <i class="fa-solid fa-clock-rotate-left"></i> Revisões
             </a>
-            <?php if (($_SESSION['usuario_cargo'] ?? '') === 'administrador'): ?>
+            <?php if ($isAdmin): ?>
                 <a href="<?= url('/solicitacoes') ;?>" class="dash-nav-item">
                     <i class="fa-solid fa-user-gear"></i> Solicitações de Cargo
                 </a>
@@ -52,7 +57,13 @@ $userEmail = $_SESSION['usuario_email'] ?? '';
     <div class="dash-main">
 
         <header class="dash-topbar">
-            <h1 class="dash-title">Painel Administrativo - Jornal Atlas</h1>
+            <h1 class="dash-title">
+                <?php if ($isAdmin): ?>Painel Administrativo
+                <?php elseif ($isRevisor): ?>Painel do Revisor
+                <?php else: ?>Painel do Redator
+                <?php endif; ?>
+                - Jornal Atlas
+            </h1>
             <div class="dash-user">
                 <img src="<?= asset($userFoto) ;?>" alt="Foto" class="dash-user-avatar">
                 <div class="dash-user-info">
@@ -72,8 +83,8 @@ $userEmail = $_SESSION['usuario_email'] ?? '';
                     <div class="dash-stat-icon"><i class="fa-regular fa-newspaper"></i></div>
                     <div class="dash-stat-text">
                         <span class="dash-stat-num"><?= $total ;?></span>
-                        <span class="dash-stat-label">Total de Notícias</span>
-                        <span class="dash-stat-sub">Publicadas no sistema</span>
+                        <span class="dash-stat-label"><?= $isAdmin ? 'Total de Notícias' : 'Minhas Notícias' ;?></span>
+                        <span class="dash-stat-sub"><?= $isAdmin ? 'Publicadas no sistema' : 'Criadas por você' ;?></span>
                     </div>
                 </div>
                 <div class="dash-stat-card">
@@ -81,7 +92,7 @@ $userEmail = $_SESSION['usuario_email'] ?? '';
                     <div class="dash-stat-text">
                         <span class="dash-stat-num"><?= $pendentes ;?></span>
                         <span class="dash-stat-label">Pendentes de Revisão</span>
-                        <span class="dash-stat-sub">Aguardando análise</span>
+                        <span class="dash-stat-sub"><?= $isAdmin ? 'Aguardando análise' : ($isRevisor ? 'Na fila geral' : 'Suas notícias') ;?></span>
                     </div>
                 </div>
                 <div class="dash-stat-card">
@@ -89,9 +100,10 @@ $userEmail = $_SESSION['usuario_email'] ?? '';
                     <div class="dash-stat-text">
                         <span class="dash-stat-num"><?= $aprovadas ;?></span>
                         <span class="dash-stat-label">Aprovadas</span>
-                        <span class="dash-stat-sub">Publicadas no total</span>
+                        <span class="dash-stat-sub"><?= $isAdmin ? 'Publicadas no total' : 'Suas publicadas' ;?></span>
                     </div>
                 </div>
+                <?php if ($isAdmin): ?>
                 <div class="dash-stat-card">
                     <div class="dash-stat-icon"><i class="fa-solid fa-pen-nib"></i></div>
                     <div class="dash-stat-text">
@@ -108,11 +120,12 @@ $userEmail = $_SESSION['usuario_email'] ?? '';
                         <span class="dash-stat-sub">Ativos</span>
                     </div>
                 </div>
+                <?php endif; ?>
             </div>
 
             <div class="dash-section">
                 <div class="dash-section-header">
-                    <h2>Fila de Revisão</h2>
+                    <h2><?= $isAdmin ? 'Fila de Revisão' : ($isRevisor ? 'Fila de Revisão' : 'Minhas Notícias Pendentes') ;?></h2>
                     <div class="dash-section-actions">
                         <a href="<?= url('/revisao') ;?>" class="dash-btn dash-btn-primary">
                             <i class="fa-solid fa-eye"></i> VER TODAS
@@ -123,14 +136,16 @@ $userEmail = $_SESSION['usuario_email'] ?? '';
                 <?php if (empty($filaRevisao)): ?>
                     <div class="dash-empty">
                         <i class="fa-regular fa-circle-check"></i>
-                        <p>Nenhuma notícia pendente de revisão.</p>
+                        <p><?= $isAdmin ? 'Nenhuma notícia pendente de revisão.' : 'Nenhuma notícia sua pendente de revisão.' ;?></p>
                     </div>
                 <?php else: ?>
                     <table class="dash-table">
                         <thead>
                             <tr>
                                 <th>Título</th>
+                                <?php if ($isAdmin || $isRevisor): ?>
                                 <th>Redator</th>
+                                <?php endif; ?>
                                 <th>Status</th>
                                 <th>Data de Envio</th>
                                 <th>Ações</th>
@@ -143,19 +158,22 @@ $userEmail = $_SESSION['usuario_email'] ?? '';
                                     <span class="dash-noticia-titulo"><?= e($row['titulo']) ;?></span>
                                     <span class="dash-categoria-tag"><?= e($row['categoria']) ;?></span>
                                 </td>
+                                <?php if ($isAdmin || $isRevisor): ?>
                                 <td>
                                     <div class="dash-user-cell">
                                         <img src="<?= asset($row['autor_foto'] ?? 'img/avatar_admin.png') ;?>" alt="" class="dash-cell-avatar">
                                         <?= e($row['autor_nome'] ?? 'Desconhecido') ;?>
                                     </div>
                                 </td>
+                                <?php endif; ?>
                                 <td><span class="dash-status pendente">PENDENTE</span></td>
                                 <td><?= date('d/m/Y', strtotime($row['dataCriacao'])) ;?><br><small><?= date('H:i', strtotime($row['dataCriacao'])) ;?></small></td>
                                 <td>
                                     <div class="dash-actions">
                                         <a href="<?= url('/noticia/' . $row['id']) ;?>" class="dash-action-btn view" title="Ver"><i class="fa-solid fa-eye"></i></a>
-                                        <a href="<?= url('/revisao?noticia=' . $row['id']) ;?>" class="dash-action-btn approve" title="Aprovar"><i class="fa-solid fa-check"></i></a>
-                                        <a href="<?= url('/revisao?noticia=' . $row['id']) ;?>" class="dash-action-btn reject" title="Rejeitar"><i class="fa-solid fa-xmark"></i></a>
+                                        <?php if ($isAdmin || $isRevisor): ?>
+                                        <a href="<?= url('/revisao?noticia=' . $row['id']) ;?>" class="dash-action-btn approve" title="Revisar"><i class="fa-solid fa-check"></i></a>
+                                        <?php endif; ?>
                                     </div>
                                 </td>
                             </tr>
@@ -165,6 +183,7 @@ $userEmail = $_SESSION['usuario_email'] ?? '';
                 <?php endif; ?>
             </div>
 
+            <?php if ($isAdmin): ?>
             <div class="dash-section">
                 <div class="dash-section-header">
                     <h2>Solicitações de Cargo</h2>
@@ -216,6 +235,7 @@ $userEmail = $_SESSION['usuario_email'] ?? '';
                     </table>
                 <?php endif; ?>
             </div>
+            <?php endif; ?>
 
         </div>
 

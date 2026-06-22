@@ -2,6 +2,7 @@
 
 namespace App\Controllers;
 
+use App\Core\Auth;
 use App\Core\CargoSolicitado;
 use App\Repositories\UsuarioRepository;
 use App\Repositories\NoticiaRepository;
@@ -12,11 +13,8 @@ class ProfileController
 {
     public function index(): void
     {
-        $userId = $_SESSION['usuario_id'] ?? null;
-        if (!$userId) {
-            header('Location: ' . url('/login'));
-            exit;
-        }
+        Auth::requireLogin();
+        $userId = Auth::id();
 
         $usuario = UsuarioRepository::find((int) $userId);
         if (!$usuario) {
@@ -49,11 +47,8 @@ class ProfileController
 
     public function update(): void
     {
-        $userId = $_SESSION['usuario_id'] ?? null;
-        if (!$userId) {
-            header('Location: ' . url('/login'));
-            exit;
-        }
+        Auth::requireLogin();
+        $userId = Auth::id();
 
         $nome = trim($_POST['nome'] ?? '');
         $email = trim($_POST['email'] ?? '');
@@ -79,11 +74,8 @@ class ProfileController
 
     public function solicitar(): void
     {
-        $userId = $_SESSION['usuario_id'] ?? null;
-        if (!$userId) {
-            header('Location: ' . url('/login'));
-            exit;
-        }
+        Auth::requireLogin();
+        $userId = Auth::id();
 
         $usuario = UsuarioRepository::find((int) $userId);
         if (!$usuario) {

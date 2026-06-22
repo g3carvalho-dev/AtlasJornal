@@ -5,6 +5,8 @@ $userCargo = $_SESSION['usuario_cargo'] ?? 'leitor';
 $userFoto = $_SESSION['usuario_foto'] ?? 'img/avatar_admin.png';
 $sucesso = $_SESSION['sucesso'] ?? null;
 unset($_SESSION['sucesso']);
+$isAdmin = $userCargo === 'administrador';
+$isRevisor = in_array($userCargo, ['revisor', 'administrador']);
 
 $noticiaSelecionada = null;
 $noticiaId = $_GET['noticia'] ?? null;
@@ -51,12 +53,14 @@ $statusLabels = [
             <a href="<?= url('/revisao') ;?>" class="dash-nav-item">
                 <i class="fa-solid fa-clock-rotate-left"></i> Revisões
             </a>
+            <?php if ($isAdmin): ?>
             <a href="<?= url('/solicitacoes') ;?>" class="dash-nav-item">
                 <i class="fa-solid fa-user-gear"></i> Solicitações de Cargo
             </a>
             <a href="<?= url('/admin/usuarios') ;?>" class="dash-nav-item">
                 <i class="fa-solid fa-users"></i> Usuários
             </a>
+            <?php endif; ?>
             <a href="<?= url('/perfil') ;?>" class="dash-nav-item">
                 <i class="fa-solid fa-user-circle"></i> Perfil
             </a>
@@ -141,9 +145,11 @@ $statusLabels = [
                                         <div class="dash-actions" onclick="event.stopPropagation()">
                                             <a href="<?= url('/noticia/' . $n['id']) ;?>" class="dash-action-btn view" title="Ver"><i class="fa-solid fa-eye"></i></a>
                                             <a href="<?= url('/noticia/' . $n['id'] . '/editar') ;?>" class="dash-action-btn approve" title="Editar"><i class="fa-solid fa-pen"></i></a>
+                                            <?php if ($isAdmin): ?>
                                             <form method="POST" action="<?= url('/admin/noticias/excluir/' . $n['id']) ;?>" style="display:inline;" onsubmit="return confirm('Tem certeza que deseja excluir esta notícia? Esta ação não pode ser desfeita.');">
                                                 <button type="submit" class="dash-action-btn reject" title="Excluir"><i class="fa-solid fa-trash"></i></button>
                                             </form>
+                                            <?php endif; ?>
                                         </div>
                                     </td>
                                 </tr>
