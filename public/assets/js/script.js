@@ -164,6 +164,20 @@ document.addEventListener('DOMContentLoaded', () => {
     criarControlesFlutuantes();
     configurarCompartilhamento();
 
+    // TOGGLE SENHA
+    document.querySelectorAll('.toggle-password').forEach((icon) => {
+        icon.addEventListener('click', () => {
+            const input = icon.closest('.input-field').querySelector('input');
+            if (!input) return;
+
+            const isPassword = input.type === 'password';
+            input.type = isPassword ? 'text' : 'password';
+
+            icon.classList.toggle('fa-eye', !isPassword);
+            icon.classList.toggle('fa-eye-slash', isPassword);
+        });
+    });
+
     const searchInput = document.querySelector('.search-box input');
     const cardItems = document.querySelectorAll('.card-wrapper, .cards > .card-link');
 
@@ -229,4 +243,50 @@ document.addEventListener('DOMContentLoaded', () => {
             form.reset();
         });
     });
+});
+
+// ========================================================
+// CARROSSEL DE SEÇÕES (NACIONAL / INTERNACIONAL / RELACIONADAS)
+// ========================================================
+
+document.addEventListener('DOMContentLoaded', function () {
+
+    document.querySelectorAll('.section-carousel').forEach(function (carousel) {
+        var pages = carousel.querySelectorAll('.section-carousel-page');
+        var dots = carousel.querySelectorAll('.section-dot');
+        var prevBtn = carousel.querySelector('.section-carousel-prev');
+        var nextBtn = carousel.querySelector('.section-carousel-next');
+        var current = 0;
+
+        function showPage(index) {
+            if (index >= pages.length) index = 0;
+            if (index < 0) index = pages.length - 1;
+            current = index;
+
+            pages.forEach(function (p) { p.classList.remove('active'); });
+            dots.forEach(function (d) { d.classList.remove('active'); });
+
+            if (pages[current]) pages[current].classList.add('active');
+            if (dots[current]) dots[current].classList.add('active');
+        }
+
+        if (prevBtn) {
+            prevBtn.addEventListener('click', function () {
+                showPage(current - 1);
+            });
+        }
+
+        if (nextBtn) {
+            nextBtn.addEventListener('click', function () {
+                showPage(current + 1);
+            });
+        }
+
+        dots.forEach(function (dot) {
+            dot.addEventListener('click', function () {
+                showPage(parseInt(dot.getAttribute('data-index')));
+            });
+        });
+    });
+
 });

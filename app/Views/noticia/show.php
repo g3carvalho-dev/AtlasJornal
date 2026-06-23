@@ -153,26 +153,53 @@ $isAdmin = $userCargo === 'administrador';
 
     <!-- RELACIONADAS -->
     <?php
-$relacionadasFiltradas = array_filter($relacionadas, fn($r) => $r->getId() !== $noticia->getId());
-$relacionadasFiltradas = array_slice($relacionadasFiltradas, 0, 3);
+$relacionadasFiltradas = array_values(array_filter($relacionadas, fn($r) => $r->getId() !== $noticia->getId()));
+    $relacionadasPaginas = array_chunk($relacionadasFiltradas, 4);
+$relacionadasTotal = count($relacionadasPaginas);
 ?>
 
     <?php if (count($relacionadasFiltradas) > 0): ?>
     <section class="secao">
         <h2>Mais notícias</h2>
-        <div class="cards">
-            <?php foreach ($relacionadasFiltradas as $rel): ?>
-            <a href="<?= url('/noticia/' . $rel->getId()) ;?>" class="card card-link">
-                <div class="card-img-wrapper">
-                    <img src="<?= asset('img/' . $rel->getImagem()) ;?>" alt="<?= e($rel->getTitulo()) ;?>">
+
+        <div class="section-carousel" id="carousel-relacionadas">
+            <div class="section-carousel-viewport">
+                <?php foreach ($relacionadasPaginas as $pi => $pagina): ?>
+                <div class="section-carousel-page <?= $pi === 0 ? 'active' : '' ;?>">
+                    <div class="cards">
+                        <?php foreach ($pagina as $rel): ?>
+                        <a href="<?= url('/noticia/' . $rel->getId()) ;?>" class="card card-link">
+                            <div class="card-img-wrapper">
+                                <img src="<?= asset('img/' . $rel->getImagem()) ;?>" alt="<?= e($rel->getTitulo()) ;?>">
+                            </div>
+                            <div class="card-body">
+                                <h3><?= e($rel->getTitulo()) ;?></h3>
+                                <p><?= e($rel->getResumo()) ;?></p>
+                            </div>
+                        </a>
+                        <?php endforeach; ?>
+                    </div>
                 </div>
-                <div class="card-body">
-                    <h3><?= e($rel->getTitulo()) ;?></h3>
-                    <p><?= e($rel->getResumo()) ;?></p>
+                <?php endforeach; ?>
+            </div>
+
+            <?php if ($relacionadasTotal > 1): ?>
+            <div class="section-carousel-controls">
+                <button class="section-carousel-btn section-carousel-prev" data-carousel="carousel-relacionadas" aria-label="Anterior">
+                    <i class="fa-solid fa-arrow-left"></i>
+                </button>
+                <div class="section-carousel-dots">
+                    <?php for ($d = 0; $d < $relacionadasTotal; $d++): ?>
+                    <span class="section-dot <?= $d === 0 ? 'active' : '' ;?>" data-carousel="carousel-relacionadas" data-index="<?= $d ;?>"></span>
+                    <?php endfor; ?>
                 </div>
-            </a>
-            <?php endforeach; ?>
+                <button class="section-carousel-btn section-carousel-next" data-carousel="carousel-relacionadas" aria-label="Próximo">
+                    <i class="fa-solid fa-arrow-right"></i>
+                </button>
+            </div>
+            <?php endif; ?>
         </div>
+
     </section>
     <?php endif; ?>
 

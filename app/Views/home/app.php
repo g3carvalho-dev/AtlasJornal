@@ -227,29 +227,58 @@ $isAdmin = $userCargo === 'administrador';
 
         <h2>Nacional</h2>
 
-        <div class="cards">
+        <?php
+        $nacionalPaginas = array_chunk($nacional, 8);
+        $nacionalTotal = count($nacionalPaginas);
+        ?>
 
-            <?php foreach ($nacional as $noticia): ?>
-            <div class="card-wrapper">
-                <a href="<?= url('/noticia/' . $noticia->getId()) ;?>" class="card card-link">
-                    <div class="card-img-wrapper">
-                        <img src="<?= asset('img/' . $noticia->getImagem()) ;?>" alt="<?= e($noticia->getTitulo()) ;?>">
-                        <span class="card-categoria-tag"><?= e($noticia->getCategoria()) ;?></span>
-                    </div>
-                    <div class="card-body">
-                        <h3><?= e($noticia->getTitulo()) ;?></h3>
-                        <p><?= e($noticia->getResumo()) ;?></p>
-                    </div>
-                </a>
+        <div class="section-carousel" id="carousel-nacional">
 
-                <?php if ($userLogado && $isRevisor): ?>
-                <div class="card-admin-footer">
-                    <a href="<?= url('/noticia/' . $noticia->getId() . '/editar') ;?>" class="btn-card-manage"><i
-                            class="fa-solid fa-gear"></i> Editar</a>
+            <div class="section-carousel-viewport">
+                <?php foreach ($nacionalPaginas as $pi => $pagina): ?>
+                <div class="section-carousel-page <?= $pi === 0 ? 'active' : '' ;?>">
+                    <div class="cards">
+                        <?php foreach ($pagina as $noticia): ?>
+                        <div class="card-wrapper">
+                            <a href="<?= url('/noticia/' . $noticia->getId()) ;?>" class="card card-link">
+                                <div class="card-img-wrapper">
+                                    <img src="<?= asset('img/' . $noticia->getImagem()) ;?>" alt="<?= e($noticia->getTitulo()) ;?>">
+                                    <span class="card-categoria-tag"><?= e($noticia->getCategoria()) ;?></span>
+                                </div>
+                                <div class="card-body">
+                                    <h3><?= e($noticia->getTitulo()) ;?></h3>
+                                    <p><?= e($noticia->getResumo()) ;?></p>
+                                </div>
+                            </a>
+
+                            <?php if ($userLogado && $isRevisor): ?>
+                            <div class="card-admin-footer">
+                                <a href="<?= url('/noticia/' . $noticia->getId() . '/editar') ;?>" class="btn-card-manage"><i
+                                        class="fa-solid fa-gear"></i> Editar</a>
+                            </div>
+                            <?php endif; ?>
+                        </div>
+                        <?php endforeach; ?>
+                    </div>
                 </div>
-                <?php endif; ?>
+                <?php endforeach; ?>
             </div>
-            <?php endforeach; ?>
+
+            <?php if ($nacionalTotal > 1): ?>
+            <div class="section-carousel-controls">
+                <button class="section-carousel-btn section-carousel-prev" data-carousel="carousel-nacional" aria-label="Anterior">
+                    <i class="fa-solid fa-arrow-left"></i>
+                </button>
+                <div class="section-carousel-dots">
+                    <?php for ($d = 0; $d < $nacionalTotal; $d++): ?>
+                    <span class="section-dot <?= $d === 0 ? 'active' : '' ;?>" data-carousel="carousel-nacional" data-index="<?= $d ;?>"></span>
+                    <?php endfor; ?>
+                </div>
+                <button class="section-carousel-btn section-carousel-next" data-carousel="carousel-nacional" aria-label="Próximo">
+                    <i class="fa-solid fa-arrow-right"></i>
+                </button>
+            </div>
+            <?php endif; ?>
 
         </div>
 
@@ -261,29 +290,58 @@ $isAdmin = $userCargo === 'administrador';
 
         <h2>Internacional</h2>
 
-        <div class="cards">
+        <?php
+        $internacionalPaginas = array_chunk($internacional, 8);
+        $internacionalTotal = count($internacionalPaginas);
+        ?>
 
-            <?php foreach ($internacional as $noticia): ?>
-            <div class="card-wrapper">
-                <a href="<?= url('/noticia/' . $noticia->getId()) ;?>" class="card card-link">
-                    <div class="card-img-wrapper">
-                        <img src="<?= asset('img/' . $noticia->getImagem()) ;?>" alt="<?= e($noticia->getTitulo()) ;?>">
-                        <span class="card-categoria-tag"><?= e($noticia->getCategoria()) ;?></span>
-                    </div>
-                    <div class="card-body">
-                        <h3><?= e($noticia->getTitulo()) ;?></h3>
-                        <p><?= e($noticia->getResumo()) ;?></p>
-                    </div>
-                </a>
+        <div class="section-carousel" id="carousel-internacional">
 
-                <?php if ($userLogado && $isRevisor): ?>
-                <div class="card-admin-footer">
-                    <a href="<?= url('/noticia/' . $noticia->getId() . '/editar') ;?>" class="btn-card-manage"><i
-                            class="fa-solid fa-gear"></i> Editar</a>
+            <div class="section-carousel-viewport">
+                <?php foreach ($internacionalPaginas as $pi => $pagina): ?>
+                <div class="section-carousel-page <?= $pi === 0 ? 'active' : '' ;?>">
+                    <div class="cards">
+                        <?php foreach ($pagina as $noticia): ?>
+                        <div class="card-wrapper">
+                            <a href="<?= url('/noticia/' . $noticia->getId()) ;?>" class="card card-link">
+                                <div class="card-img-wrapper">
+                                    <img src="<?= asset('img/' . $noticia->getImagem()) ;?>" alt="<?= e($noticia->getTitulo()) ;?>">
+                                    <span class="card-categoria-tag"><?= e($noticia->getCategoria()) ;?></span>
+                                </div>
+                                <div class="card-body">
+                                    <h3><?= e($noticia->getTitulo()) ;?></h3>
+                                    <p><?= e($noticia->getResumo()) ;?></p>
+                                </div>
+                            </a>
+
+                            <?php if ($userLogado && $isRevisor): ?>
+                            <div class="card-admin-footer">
+                                <a href="<?= url('/noticia/' . $noticia->getId() . '/editar') ;?>" class="btn-card-manage"><i
+                                        class="fa-solid fa-gear"></i> Editar</a>
+                            </div>
+                            <?php endif; ?>
+                        </div>
+                        <?php endforeach; ?>
+                    </div>
                 </div>
-                <?php endif; ?>
+                <?php endforeach; ?>
             </div>
-            <?php endforeach; ?>
+
+            <?php if ($internacionalTotal > 1): ?>
+            <div class="section-carousel-controls">
+                <button class="section-carousel-btn section-carousel-prev" data-carousel="carousel-internacional" aria-label="Anterior">
+                    <i class="fa-solid fa-arrow-left"></i>
+                </button>
+                <div class="section-carousel-dots">
+                    <?php for ($d = 0; $d < $internacionalTotal; $d++): ?>
+                    <span class="section-dot <?= $d === 0 ? 'active' : '' ;?>" data-carousel="carousel-internacional" data-index="<?= $d ;?>"></span>
+                    <?php endfor; ?>
+                </div>
+                <button class="section-carousel-btn section-carousel-next" data-carousel="carousel-internacional" aria-label="Próximo">
+                    <i class="fa-solid fa-arrow-right"></i>
+                </button>
+            </div>
+            <?php endif; ?>
 
         </div>
 
