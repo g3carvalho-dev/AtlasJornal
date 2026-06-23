@@ -13,6 +13,7 @@ if (APP_ENV === 'local') {
     ];
 }
 
+// Insira as credenciais do banco de dados do seu serviço de hospedagem aqui.
 return [
     'host' => 'xxxxxxxxxxxx',
     'database' => 'xxxxxxxxxxxxx',

@@ -6415,6 +6415,111 @@ body.tema-escuro .preview-status-badge.status-rejeitada {
     color: #f5a5a5 !important;
 }
 
+/* ==========================================
+   PÁGINA 404
+   ========================================== */
+
+.erro-404-pagina {
+    min-height: 50vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 60px 5% 80px;
+}
+
+.erro-404-container {
+    text-align: center;
+    max-width: 520px;
+}
+
+.erro-404-codigo {
+    font-family: 'Playfair Display', serif;
+    font-size: 120px;
+    font-weight: 700;
+    color: var(--dourado);
+    line-height: 1;
+    margin-bottom: 16px;
+    opacity: 0.25;
+}
+
+.erro-404-container h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: 28px;
+    color: var(--azul);
+    margin: 0 0 12px;
+}
+
+.erro-404-container p {
+    font-size: 16px;
+    color: #666;
+    margin: 0 0 32px;
+    line-height: 1.6;
+}
+
+.erro-404-acoes {
+    display: flex;
+    gap: 12px;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
+.erro-404-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 12px 24px;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 600;
+    text-decoration: none;
+    transition: 0.3s;
+    cursor: pointer;
+}
+
+.erro-404-btn.principal {
+    background: var(--azul);
+    color: white;
+}
+
+.erro-404-btn.principal:hover {
+    background: #0a1628;
+}
+
+.erro-404-btn.secundario {
+    background: transparent;
+    color: var(--azul);
+    border: 2px solid var(--azul);
+}
+
+.erro-404-btn.secundario:hover {
+    background: var(--azul);
+    color: white;
+}
+
+/* Dark mode - 404 */
+body.tema-escuro .erro-404-codigo {
+    color: var(--dourado);
+    opacity: 0.2;
+}
+
+body.tema-escuro .erro-404-container h1 {
+    color: var(--dourado) !important;
+}
+
+body.tema-escuro .erro-404-container p {
+    color: #999 !important;
+}
+
+body.tema-escuro .erro-404-btn.secundario {
+    color: var(--dourado) !important;
+    border-color: var(--dourado) !important;
+}
+
+body.tema-escuro .erro-404-btn.secundario:hover {
+    background: var(--dourado) !important;
+    color: var(--azul) !important;
+}
+
 @media(max-width: 1100px) {
     .mais-acessadas-lista {
         grid-template-columns: repeat(2, 1fr);
@@ -6438,5 +6543,15 @@ body.tema-escuro .preview-status-badge.status-rejeitada {
     }
     .mais-acessadas-lista {
         grid-template-columns: 1fr;
+    }
+    .erro-404-codigo {
+        font-size: 80px;
+    }
+    .erro-404-container h1 {
+        font-size: 22px;
+    }
+    .erro-404-acoes {
+        flex-direction: column;
+        align-items: center;
     }
 }
