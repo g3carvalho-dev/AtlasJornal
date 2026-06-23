@@ -191,6 +191,7 @@ class App
                         $controller->index();
                     }
                 } elseif (($segments[1] ?? '') === 'noticias') {
+                    require_once __DIR__ . '/../Controllers/AdminNoticiaController.php';
                     $controller = new AdminNoticiaController();
                     if (($segments[2] ?? '') === 'excluir' && ($segments[3] ?? '')) {
                         $controller->delete($segments[3]);

@@ -15,6 +15,7 @@ $userFoto = $_SESSION['usuario_foto'] ?? 'img/avatar_admin.png';
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Meu Perfil - Jornal Atlas</title>
+    <link rel="icon" type="image/png" href="<?= asset('img/atlas.fav.png') ;?>">
     <link rel="stylesheet" href="<?= asset('css/style.css') ;?>">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
     <link

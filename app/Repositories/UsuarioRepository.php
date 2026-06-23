@@ -14,7 +14,7 @@ class UsuarioRepository
             'SELECT * FROM Usuario WHERE id = :id LIMIT 1'
         );
 
-        $stmt->execute(['id' => $id]);
+        $stmt->execute([':id' => $id]);
         $row = $stmt->fetch();
 
         return $row ? self::hydrate($row) : null;
@@ -26,7 +26,7 @@ class UsuarioRepository
             'SELECT * FROM Usuario WHERE email = :email LIMIT 1'
         );
 
-        $stmt->execute(['email' => $email]);
+        $stmt->execute([':email' => $email]);
         $row = $stmt->fetch();
 
         return $row ? self::hydrate($row) : null;
