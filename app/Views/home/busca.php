@@ -30,14 +30,14 @@ $userFoto = $_SESSION['usuario_foto'] ?? 'img/avatar_admin.png';
     <div class="topbar">
         <div class="topbar-left" id="data-atual"></div>
         <div class="topbar-right">
-            <a href="#">Sobre nós</a>
-            <a href="#">Anuncie</a>
-            <a href="#">Contato</a>
+            <a href="<?= url('/sobre') ;?>">Sobre nós</a>
+            <a href="<?= url('/anuncie') ;?>">Anuncie</a>
+            <a href="<?= url('/contato') ;?>">Contato</a>
             <div class="social-icons">
-                <a href="#" aria-label="Facebook"><i class="fa-brands fa-facebook-f"></i></a>
-                <a href="#" aria-label="Instagram"><i class="fa-brands fa-instagram"></i></a>
-                <a href="#" aria-label="Twitter"><i class="fa-brands fa-x-twitter"></i></a>
-                <a href="#" aria-label="YouTube"><i class="fa-brands fa-youtube"></i></a>
+                <a href="https://facebook.com" target="_blank" rel="noopener noreferrer" aria-label="Facebook"><i class="fa-brands fa-facebook-f"></i></a>
+                <a href="https://instagram.com" target="_blank" rel="noopener noreferrer" aria-label="Instagram"><i class="fa-brands fa-instagram"></i></a>
+                <a href="https://twitter.com" target="_blank" rel="noopener noreferrer" aria-label="Twitter"><i class="fa-brands fa-x-twitter"></i></a>
+                <a href="https://youtube.com" target="_blank" rel="noopener noreferrer" aria-label="YouTube"><i class="fa-brands fa-youtube"></i></a>
             </div>
         </div>
     </div>
@@ -62,8 +62,8 @@ $userFoto = $_SESSION['usuario_foto'] ?? 'img/avatar_admin.png';
                     <span class="user-name"><?= e($userNome) ;?></span>
                     <span class="user-role-label"><?= ucfirst(e($userCargo)) ;?></span>
                 </div>
+                <a href="<?= url('/logout') ;?>" class="btn-logout-icon" title="Sair do sistema"><i class="fa-solid fa-right-from-bracket"></i></a>
             </div>
-            <a href="<?= url('/logout') ;?>" class="btn-logout">Sair</a>
             <?php else: ?>
             <a href="<?= url('/login') ;?>" class="btn-login">Entrar</a>
             <a href="<?= url('/cadastro') ;?>" class="btn-cadastro">Cadastrar</a>
@@ -122,8 +122,10 @@ $userFoto = $_SESSION['usuario_foto'] ?? 'img/avatar_admin.png';
                         <div class="busca-card-meta">
                             <span><i class="fa-solid fa-user-pen"></i>
                                 <?= e($r['autor_nome'] ?? 'Desconhecido') ;?></span>
+                            <?php if ($r['dataPublicacao']): ?>
                             <span><i class="fa-regular fa-calendar"></i>
                                 <?= format_date(new DateTime($r['dataPublicacao']), 'd/m/Y') ;?></span>
+                            <?php endif; ?>
                         </div>
                     </div>
                 </a>
@@ -145,34 +147,34 @@ $userFoto = $_SESSION['usuario_foto'] ?? 'img/avatar_admin.png';
                     Informação com profundidade, contexto e credibilidade para entender o mundo.
                 </p>
                 <div class="footer-social">
-                    <a href="#" aria-label="Facebook"><i class="fa-brands fa-facebook-f"></i></a>
-                    <a href="#" aria-label="Instagram"><i class="fa-brands fa-instagram"></i></a>
-                    <a href="#" aria-label="Twitter"><i class="fa-brands fa-x-twitter"></i></a>
-                    <a href="#" aria-label="YouTube"><i class="fa-brands fa-youtube"></i></a>
+                    <a href="https://facebook.com" target="_blank" rel="noopener noreferrer" aria-label="Facebook"><i class="fa-brands fa-facebook-f"></i></a>
+                    <a href="https://instagram.com" target="_blank" rel="noopener noreferrer" aria-label="Instagram"><i class="fa-brands fa-instagram"></i></a>
+                    <a href="https://twitter.com" target="_blank" rel="noopener noreferrer" aria-label="Twitter"><i class="fa-brands fa-x-twitter"></i></a>
+                    <a href="https://youtube.com" target="_blank" rel="noopener noreferrer" aria-label="YouTube"><i class="fa-brands fa-youtube"></i></a>
                 </div>
             </div>
 
             <div class="footer-links-col">
                 <h4>NAVEGAÇÃO</h4>
                 <div class="links-grid">
-                    <a class="footer-link-item" href="#">Política</a>
-                    <a class="footer-link-item" href="#">Culinária</a>
-                    <a class="footer-link-item" href="#">Artes</a>
-                    <a class="footer-link-item" href="#">Lifestyle</a>
-                    <a class="footer-link-item" href="#">Games</a>
-                    <a class="footer-link-item" href="#">Business</a>
+                    <a class="footer-link-item" href="<?= url('/categoria/' . urlencode('POLITICA')) ;?>">Política</a>
+                    <a class="footer-link-item" href="<?= url('/categoria/' . urlencode('ECONOMIA')) ;?>">Economia</a>
+                    <a class="footer-link-item" href="<?= url('/categoria/' . urlencode('ESPORTES')) ;?>">Esportes</a>
+                    <a class="footer-link-item" href="<?= url('/categoria/' . urlencode('CULTURA')) ;?>">Cultura</a>
+                    <a class="footer-link-item" href="<?= url('/categoria/' . urlencode('MUNDO')) ;?>">Mundo</a>
+                    <a class="footer-link-item" href="<?= url('/categoria/' . urlencode('TECNOLOGIA')) ;?>">Tecnologia</a>
                 </div>
             </div>
 
             <div class="footer-links-col">
                 <h4>INSTITUCIONAL</h4>
                 <div class="links-grid">
-                    <a class="footer-link-item" href="#">Sobre nós</a>
-                    <a class="footer-link-item" href="#">Anuncie</a>
-                    <a class="footer-link-item" href="#">Código de ética</a>
-                    <a class="footer-link-item" href="#">Fale conosco</a>
-                    <a class="footer-link-item" href="#">Trabalhe conosco</a>
-                    <a class="footer-link-item" href="#">Termos de uso</a>
+                    <a class="footer-link-item" href="<?= url('/sobre') ;?>">Sobre nós</a>
+                    <a class="footer-link-item" href="<?= url('/anuncie') ;?>">Anuncie</a>
+                    <a class="footer-link-item" href="<?= url('/codigo-de-etica') ;?>">Código de ética</a>
+                    <a class="footer-link-item" href="<?= url('/contato') ;?>">Fale conosco</a>
+                    <a class="footer-link-item" href="<?= url('/trabalhe-conosco') ;?>">Trabalhe conosco</a>
+                    <a class="footer-link-item" href="<?= url('/termos-de-uso') ;?>">Termos de uso</a>
                 </div>
             </div>
 
@@ -203,6 +205,7 @@ $userFoto = $_SESSION['usuario_foto'] ?? 'img/avatar_admin.png';
     document.getElementById("data-atual").textContent =
         `${diasSemana[data.getDay()]}, ${data.getDate()} de ${meses[data.getMonth()]} de ${data.getFullYear()}`;
     </script>
+    <script src="<?= asset('js/script.js') ;?>"></script>
 </body>
 
 </html>

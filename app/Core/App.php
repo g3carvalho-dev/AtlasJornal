@@ -50,6 +50,34 @@ class App
                 $controller->index();
                 break;
 
+            case 'sobre':
+                require_once __DIR__ . '/../Controllers/HomeController.php';
+                $controller = new HomeController();
+                $controller->sobre();
+                break;
+
+            case 'anuncie':
+                require_once __DIR__ . '/../Controllers/HomeController.php';
+                $controller = new HomeController();
+                $controller->anuncie();
+                break;
+
+            case 'contato':
+                require_once __DIR__ . '/../Controllers/HomeController.php';
+                $controller = new HomeController();
+                $controller->contato();
+                break;
+
+            case 'codigo-de-etica':
+            case 'trabalhe-conosco':
+            case 'termos-de-uso':
+            case 'politica-de-privacidade':
+            case 'suporte':
+                require_once __DIR__ . '/../Controllers/HomeController.php';
+                $controller = new HomeController();
+                $controller->institucional($route);
+                break;
+
             case 'categoria':
                 require_once __DIR__ . '/../Controllers/CategoryController.php';
                 $controller = new CategoryController();

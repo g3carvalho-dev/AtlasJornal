@@ -30,14 +30,14 @@ unset($_SESSION['sucesso']);
     <div class="topbar">
         <div class="topbar-left" id="data-atual"></div>
         <div class="topbar-right">
-            <a href="#">Sobre nós</a>
-            <a href="#">Anuncie</a>
-            <a href="#">Contato</a>
+            <a href="<?= url('/sobre') ;?>">Sobre nós</a>
+            <a href="<?= url('/anuncie') ;?>">Anuncie</a>
+            <a href="<?= url('/contato') ;?>">Contato</a>
             <div class="social-icons">
-                <a href="#" aria-label="Facebook"><i class="fa-brands fa-facebook-f"></i></a>
-                <a href="#" aria-label="Instagram"><i class="fa-brands fa-instagram"></i></a>
-                <a href="#" aria-label="Twitter"><i class="fa-brands fa-x-twitter"></i></a>
-                <a href="#" aria-label="YouTube"><i class="fa-brands fa-youtube"></i></a>
+                <a href="https://facebook.com" target="_blank" rel="noopener noreferrer" aria-label="Facebook"><i class="fa-brands fa-facebook-f"></i></a>
+                <a href="https://instagram.com" target="_blank" rel="noopener noreferrer" aria-label="Instagram"><i class="fa-brands fa-instagram"></i></a>
+                <a href="https://twitter.com" target="_blank" rel="noopener noreferrer" aria-label="Twitter"><i class="fa-brands fa-x-twitter"></i></a>
+                <a href="https://youtube.com" target="_blank" rel="noopener noreferrer" aria-label="YouTube"><i class="fa-brands fa-youtube"></i></a>
             </div>
         </div>
     </div>
@@ -218,7 +218,7 @@ unset($_SESSION['sucesso']);
                 </div>
 
                 <div class="preview-conteudo">
-                    <?= nl2br(e($noticiaSelecionada->getConteudo())) ;?>
+                    <?= $noticiaSelecionada->getConteudo() ;?>
                 </div>
 
                 <?php if (!empty($_SESSION['erro'])): ?>
@@ -334,10 +334,10 @@ unset($_SESSION['sucesso']);
             <div class="footer-links-col">
                 <h4>INSTITUCIONAL</h4>
                 <div class="links-grid">
-                    <a class="footer-link-item" href="#">Sobre nós</a>
-                    <a class="footer-link-item" href="#">Anuncie</a>
-                    <a class="footer-link-item" href="#">Fale conosco</a>
-                    <a class="footer-link-item" href="#">Termos de uso</a>
+                    <a class="footer-link-item" href="<?= url('/sobre') ;?>">Sobre nós</a>
+                    <a class="footer-link-item" href="<?= url('/anuncie') ;?>">Anuncie</a>
+                    <a class="footer-link-item" href="<?= url('/contato') ;?>">Fale conosco</a>
+                    <a class="footer-link-item" href="<?= url('/termos-de-uso') ;?>">Termos de uso</a>
                 </div>
             </div>
             <div class="footer-newsletter">
@@ -372,6 +372,7 @@ unset($_SESSION['sucesso']);
         });
     });
     </script>
+    <script src="<?= asset('js/script.js') ;?>"></script>
 </body>
 
 </html>

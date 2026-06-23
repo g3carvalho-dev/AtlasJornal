@@ -141,8 +141,7 @@ class NoticiaRepository
 
     public static function update(Noticia $noticia): bool
     {
-        $stmt = Database::getConnection()->prepare(
-            'UPDATE Noticia SET
+        $sql = 'UPDATE Noticia SET
                 titulo = :titulo,
                 resumo = :resumo,
                 conteudo = :conteudo,
@@ -150,11 +149,9 @@ class NoticiaRepository
                 categoria = :categoria,
                 secao = :secao,
                 status = :status,
-                dataEdicao = NOW()
-            WHERE id = :id'
-        );
+                dataEdicao = NOW()';
 
-        return $stmt->execute([
+        $params = [
             ':id' => $noticia->getId(),
             ':titulo' => $noticia->getTitulo(),
             ':resumo' => $noticia->getResumo(),
@@ -163,7 +160,17 @@ class NoticiaRepository
             ':categoria' => $noticia->getCategoria(),
             ':secao' => $noticia->getSecao(),
             ':status' => $noticia->getStatus()->value,
-        ]);
+        ];
+
+        if ($noticia->getDataPublicacao() !== null) {
+            $sql .= ', dataPublicacao = :dataPublicacao';
+            $params[':dataPublicacao'] = $noticia->getDataPublicacao()->format('Y-m-d H:i:s');
+        }
+
+        $sql .= ' WHERE id = :id';
+
+        $stmt = Database::getConnection()->prepare($sql);
+        return $stmt->execute($params);
     }
 
     public static function allWithAuthor(): array

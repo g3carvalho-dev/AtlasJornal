@@ -197,7 +197,7 @@ $acaoLabels = [
                         </div>
 
                         <div class="preview-conteudo">
-                            <?= nl2br(e($noticiaSelecionada->getConteudo())) ;?>
+                            <?= $noticiaSelecionada->getConteudo() ;?>
                         </div>
 
                         <div class="admin-noticia-actions" style="margin-top:20px;">
@@ -258,9 +258,9 @@ $acaoLabels = [
         <footer class="dash-footer">
             <p>&copy; 2026 Jornal Atlas. Todos os direitos reservados.</p>
             <div class="dash-footer-links">
-                <a href="#">Termos de Uso</a>
-                <a href="#">Política de Privacidade</a>
-                <a href="#">Suporte</a>
+                <a href="<?= url('/termos-de-uso') ;?>">Termos de Uso</a>
+                <a href="<?= url('/politica-de-privacidade') ;?>">Política de Privacidade</a>
+                <a href="<?= url('/suporte') ;?>">Suporte</a>
             </div>
         </footer>
     </div>

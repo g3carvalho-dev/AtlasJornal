@@ -103,6 +103,20 @@ unset($_SESSION['errors']);
                         <label class="form-label">Imagem da Matéria</label>
                         <div class="upload-area" id="uploadArea">
                             <input type="file" class="upload-input" id="inputImagem" name="imagem" accept="image/*">
+                            <input type="hidden" name="imagem_atual" id="imagemAtual" value="<?= e($noticia->getImagem() ?? '') ;?>">
+                            <?php if ($noticia->getImagem()): ?>
+                            <div class="upload-placeholder" id="uploadPlaceholder" style="display:none;">
+                                <i class="fa-solid fa-cloud-arrow-up"></i>
+                                <p>Clique ou arraste uma imagem aqui</p>
+                                <span>JPG, PNG ou WebP (max. 5MB)</span>
+                            </div>
+                            <div class="upload-preview" id="uploadPreview" style="display:flex;">
+                                <img id="previewImg" src="<?= asset('img/' . $noticia->getImagem()) ;?>" alt="Imagem atual">
+                                <button type="button" class="upload-remover" id="removerImagem">
+                                    <i class="fa-solid fa-xmark"></i>
+                                </button>
+                            </div>
+                            <?php else: ?>
                             <div class="upload-placeholder" id="uploadPlaceholder">
                                 <i class="fa-solid fa-cloud-arrow-up"></i>
                                 <p>Clique ou arraste uma imagem aqui</p>
@@ -114,12 +128,13 @@ unset($_SESSION['errors']);
                                     <i class="fa-solid fa-xmark"></i>
                                 </button>
                             </div>
+                            <?php endif; ?>
                         </div>
                     </div>
 
                     <div class="form-grupo">
                         <label class="form-label">Conteúdo <span class="obrigatorio">*</span></label>
-                        <textarea class="form-textarea-conteudo" name="conteudo" rows="15" required><?= e($noticia->getConteudo()) ;?></textarea>
+                        <textarea class="form-textarea-conteudo" name="conteudo" rows="15" required id="conteudo-campo"><?= e($noticia->getConteudo()) ;?></textarea>
                     </div>
 
                     <div class="create-actions">
@@ -178,7 +193,28 @@ unset($_SESSION['errors']);
         </form>
     </div>
 
+    <script src="https://cdn.ckeditor.com/ckeditor5/41.4.2/classic/ckeditor.js"></script>
     <script>
+    let ckEditorInstance = null;
+    ClassicEditor
+        .create(document.querySelector('#conteudo-campo'), {
+            toolbar: [
+                'heading', '|',
+                'bold', 'italic', 'link', 'bulletedList', 'numberedList', '|',
+                'outdent', 'indent', '|',
+                'blockQuote', 'insertTable', 'horizontalLine', '|',
+                'undo', 'redo'
+            ],
+            language: 'pt-br',
+            placeholder: 'Escreva o conteúdo da notícia aqui...'
+        })
+        .then(editor => {
+            ckEditorInstance = editor;
+        })
+        .catch(error => {
+            console.error('Erro ao inicializar CKEditor:', error);
+        });
+
     const textarea = document.querySelector('textarea[name="resumo"]');
     const contador = document.getElementById('contadorResumo');
     if (textarea && contador) {
@@ -215,6 +251,7 @@ unset($_SESSION['errors']);
         removerImagem.addEventListener('click', (e) => {
             e.stopPropagation();
             inputImagem.value = '';
+            document.getElementById('imagemAtual').value = '';
             previewImg.src = '';
             uploadPlaceholder.style.display = 'block';
             uploadPreview.style.display = 'none';
@@ -223,9 +260,13 @@ unset($_SESSION['errors']);
     </script>
     <script>
     document.querySelector('form[enctype]').addEventListener('submit', function() {
+        if (ckEditorInstance) {
+            document.getElementById('conteudo-campo').value = ckEditorInstance.getData();
+        }
         const btns = this.querySelectorAll('button[type="submit"]');
         btns.forEach(function(btn) { btn.disabled = true; });
     });
     </script>
+    <script src="<?= asset('js/script.js') ;?>"></script>
 </body>
 </html>

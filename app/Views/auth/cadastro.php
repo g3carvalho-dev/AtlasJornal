@@ -36,7 +36,7 @@ if (!function_exists('url')) {
             <span class="divider">•</span>
             <a href="<?= url('/categoria/' . urlencode('POLÍTICA')) ;?>">CATEGORIAS</a>
             <span class="divider">•</span>
-            <a href="#">SOBRE NÓS</a>
+            <a href="<?= url('/sobre') ;?>">SOBRE NÓS</a>
             <a href="<?= url('/') ;?>" class="btn-back-site"><i class="fa-solid fa-arrow-left"></i> VOLTAR AO SITE</a>
         </div>
     </div>
@@ -149,11 +149,11 @@ if (!function_exists('url')) {
     <footer class="auth-footer">
         <p>&copy; 2026 Jornal Atlas. Todos os direitos reservados.</p>
         <div class="auth-footer-links">
-            <a href="#">Política de Privacidade</a>
+            <a href="<?= url('/politica-de-privacidade') ;?>">Política de Privacidade</a>
             <span class="divider">•</span>
-            <a href="#">Termos de Uso</a>
+            <a href="<?= url('/termos-de-uso') ;?>">Termos de Uso</a>
             <span class="divider">•</span>
-            <a href="#">Contato</a>
+            <a href="<?= url('/contato') ;?>">Contato</a>
         </div>
     </footer>
 

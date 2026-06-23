@@ -21,14 +21,14 @@
     <div class="topbar">
         <div class="topbar-left" id="data-atual"></div>
         <div class="topbar-right">
-            <a href="#">Sobre nós</a>
-            <a href="#">Anuncie</a>
-            <a href="#">Contato</a>
+            <a href="<?= url('/sobre') ;?>">Sobre nós</a>
+            <a href="<?= url('/anuncie') ;?>">Anuncie</a>
+            <a href="<?= url('/contato') ;?>">Contato</a>
             <div class="social-icons">
-                <a href="#" aria-label="Facebook"><i class="fa-brands fa-facebook-f"></i></a>
-                <a href="#" aria-label="Instagram"><i class="fa-brands fa-instagram"></i></a>
-                <a href="#" aria-label="Twitter"><i class="fa-brands fa-x-twitter"></i></a>
-                <a href="#" aria-label="YouTube"><i class="fa-brands fa-youtube"></i></a>
+                <a href="https://facebook.com" target="_blank" rel="noopener noreferrer" aria-label="Facebook"><i class="fa-brands fa-facebook-f"></i></a>
+                <a href="https://instagram.com" target="_blank" rel="noopener noreferrer" aria-label="Instagram"><i class="fa-brands fa-instagram"></i></a>
+                <a href="https://x.com" target="_blank" rel="noopener noreferrer" aria-label="Twitter"><i class="fa-brands fa-x-twitter"></i></a>
+                <a href="https://youtube.com" target="_blank" rel="noopener noreferrer" aria-label="YouTube"><i class="fa-brands fa-youtube"></i></a>
             </div>
         </div>
     </div>
@@ -66,12 +66,12 @@
     <!-- MENU -->
     <nav>
         <ul>
-            <li><a href="#">Política</a></li>
-            <li><a href="#">Tecnologia</a></li>
-            <li><a href="#">Economia</a></li>
-            <li><a href="#">Esportes</a></li>
-            <li><a href="#">Mundo</a></li>
-            <li><a href="#">Cultura</a></li>
+            <li><a href="<?= url('/categoria/' . urlencode('POLÍTICA')) ;?>">Política</a></li>
+            <li><a href="<?= url('/categoria/' . urlencode('TECNOLOGIA')) ;?>">Tecnologia</a></li>
+            <li><a href="<?= url('/categoria/' . urlencode('ECONOMIA')) ;?>">Economia</a></li>
+            <li><a href="<?= url('/categoria/' . urlencode('ESPORTES')) ;?>">Esportes</a></li>
+            <li><a href="<?= url('/categoria/' . urlencode('MUNDO')) ;?>">Mundo</a></li>
+            <li><a href="<?= url('/categoria/' . urlencode('CULTURA')) ;?>">Cultura</a></li>
         </ul>
     </nav>
 
@@ -268,32 +268,32 @@ foreach ($secs as $val => $label):
                     Informação com profundidade, contexto e credibilidade para entender o mundo.
                 </p>
                 <div class="footer-social">
-                    <a href="#" aria-label="Facebook"><i class="fa-brands fa-facebook-f"></i></a>
-                    <a href="#" aria-label="Instagram"><i class="fa-brands fa-instagram"></i></a>
-                    <a href="#" aria-label="Twitter"><i class="fa-brands fa-x-twitter"></i></a>
-                    <a href="#" aria-label="YouTube"><i class="fa-brands fa-youtube"></i></a>
+                    <a href="https://facebook.com" target="_blank" rel="noopener noreferrer" aria-label="Facebook"><i class="fa-brands fa-facebook-f"></i></a>
+                    <a href="https://instagram.com" target="_blank" rel="noopener noreferrer" aria-label="Instagram"><i class="fa-brands fa-instagram"></i></a>
+                    <a href="https://x.com" target="_blank" rel="noopener noreferrer" aria-label="Twitter"><i class="fa-brands fa-x-twitter"></i></a>
+                    <a href="https://youtube.com" target="_blank" rel="noopener noreferrer" aria-label="YouTube"><i class="fa-brands fa-youtube"></i></a>
                 </div>
             </div>
             <div class="footer-links-col">
                 <h4>NAVEGAÇÃO</h4>
                 <div class="links-grid">
-                    <a class="footer-link-item" href="#">Política</a>
-                    <a class="footer-link-item" href="#">Culinária</a>
-                    <a class="footer-link-item" href="#">Artes</a>
-                    <a class="footer-link-item" href="#">Lifestyle</a>
-                    <a class="footer-link-item" href="#">Games</a>
-                    <a class="footer-link-item" href="#">Business</a>
+                    <a class="footer-link-item" href="<?= url('/categoria/' . urlencode('POLÍTICA')) ;?>">Política</a>
+                    <a class="footer-link-item" href="<?= url('/categoria/' . urlencode('ECONOMIA')) ;?>">Economia</a>
+                    <a class="footer-link-item" href="<?= url('/categoria/' . urlencode('ESPORTES')) ;?>">Esportes</a>
+                    <a class="footer-link-item" href="<?= url('/categoria/' . urlencode('CULTURA')) ;?>">Cultura</a>
+                    <a class="footer-link-item" href="<?= url('/categoria/' . urlencode('MUNDO')) ;?>">Mundo</a>
+                    <a class="footer-link-item" href="<?= url('/categoria/' . urlencode('TECNOLOGIA')) ;?>">Tecnologia</a>
                 </div>
             </div>
             <div class="footer-links-col">
                 <h4>INSTITUCIONAL</h4>
                 <div class="links-grid">
-                    <a class="footer-link-item" href="#">Sobre nós</a>
-                    <a class="footer-link-item" href="#">Anuncie</a>
-                    <a class="footer-link-item" href="#">Código de ética</a>
-                    <a class="footer-link-item" href="#">Fale conosco</a>
-                    <a class="footer-link-item" href="#">Trabalhe conosco</a>
-                    <a class="footer-link-item" href="#">Termos de uso</a>
+                    <a class="footer-link-item" href="<?= url('/sobre') ;?>">Sobre nós</a>
+                    <a class="footer-link-item" href="<?= url('/anuncie') ;?>">Anuncie</a>
+                    <a class="footer-link-item" href="<?= url('/codigo-de-etica') ;?>">Código de ética</a>
+                    <a class="footer-link-item" href="<?= url('/contato') ;?>">Fale conosco</a>
+                    <a class="footer-link-item" href="<?= url('/trabalhe-conosco') ;?>">Trabalhe conosco</a>
+                    <a class="footer-link-item" href="<?= url('/termos-de-uso') ;?>">Termos de uso</a>
                 </div>
             </div>
             <div class="footer-newsletter">
@@ -311,6 +311,7 @@ foreach ($secs as $val => $label):
     </footer>
 
     <!-- SCRIPTS -->
+    <script src="https://cdn.ckeditor.com/ckeditor5/41.4.2/classic/ckeditor.js"></script>
     <script>
     // Data atual na topbar
     const data = new Date();
@@ -373,8 +374,33 @@ foreach ($secs as $val => $label):
         updateChecklist();
     });
 
+    // CKEditor 5 no campo de conteúdo
+    let ckEditorInstance = null;
+    ClassicEditor
+        .create(document.querySelector('#conteudo-campo'), {
+            toolbar: [
+                'heading', '|',
+                'bold', 'italic', 'link', 'bulletedList', 'numberedList', '|',
+                'outdent', 'indent', '|',
+                'blockQuote', 'insertTable', 'horizontalLine', '|',
+                'undo', 'redo'
+            ],
+            language: 'pt-br',
+            placeholder: 'Comece a escrever sua notícia aqui...'
+        })
+        .then(editor => {
+            ckEditorInstance = editor;
+            updateContadorPalavras();
+            editor.model.document.on('change', () => {
+                updateContadorPalavras();
+                updateChecklist();
+            });
+        })
+        .catch(error => {
+            console.error('Erro ao inicializar CKEditor:', error);
+        });
+
     // Contador de palavras do conteúdo
-    const conteudoCampo = document.getElementById('conteudo-campo');
     const palavrasContador = document.getElementById('palavras-contador');
 
     function contarPalavras(texto) {
@@ -384,14 +410,14 @@ foreach ($secs as $val => $label):
     }
 
     function updateContadorPalavras() {
-        const texto = conteudoCampo.value || '';
-        palavrasContador.textContent = contarPalavras(texto);
+        if (ckEditorInstance) {
+            const texto = ckEditorInstance.getData();
+            palavrasContador.textContent = contarPalavras(texto);
+        } else {
+            const texto = document.getElementById('conteudo-campo').value || '';
+            palavrasContador.textContent = contarPalavras(texto);
+        }
     }
-
-    conteudoCampo.addEventListener('input', () => {
-        updateContadorPalavras();
-        updateChecklist();
-    });
 
     // Checklist dinâmica
     function updateChecklist() {
@@ -400,7 +426,7 @@ foreach ($secs as $val => $label):
         const categoria = document.querySelector('select[name="categoria"]').value;
         const secao = document.querySelector('select[name="secao"]').value;
         const imagemDefinida = inputImagem.files.length > 0;
-        const conteudoTexto = conteudoCampo.value || '';
+        const conteudoTexto = ckEditorInstance ? ckEditorInstance.getData() : (document.getElementById('conteudo-campo').value || '');
         const palavras = contarPalavras(conteudoTexto);
 
         setCheck('check-titulo', titulo.length > 0);
@@ -430,7 +456,7 @@ foreach ($secs as $val => $label):
     document.getElementById('btn-preview').addEventListener('click', () => {
         const titulo = document.querySelector('input[name="titulo"]').value || 'Sem título';
         const resumoVal = document.getElementById('resumo').value || '';
-        const conteudoHtml = conteudoCampo.value || '';
+        const conteudoHtml = ckEditorInstance ? ckEditorInstance.getData() : (document.getElementById('conteudo-campo').value || '');
 
         let imgHtml = '';
         if (uploadPreview.style.display !== 'none') {
@@ -469,14 +495,18 @@ foreach ($secs as $val => $label):
     updateChecklist();
     updateContadorPalavras();
 
-    // Prevenir duplo envio
+    // Prevenir duplo envio e sincronizar CKEditor
     document.getElementById('form-noticia').addEventListener('submit', function() {
+        if (ckEditorInstance) {
+            document.getElementById('conteudo-campo').value = ckEditorInstance.getData();
+        }
         const btns = this.querySelectorAll('button[type="submit"]');
         btns.forEach(function(btn) {
             btn.disabled = true;
         });
     });
     </script>
+    <script src="<?= asset('js/script.js') ;?>"></script>
 
 </body>
 

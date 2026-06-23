@@ -37,28 +37,15 @@ $isAdmin = $userCargo === 'administrador';
 
         <div class="topbar-right">
 
-            <a href="#">Sobre nós</a>
-            <a href="#">Anuncie</a>
-            <a href="#">Contato</a>
+            <a href="<?= url('/sobre') ;?>">Sobre nós</a>
+            <a href="<?= url('/anuncie') ;?>">Anuncie</a>
+            <a href="<?= url('/contato') ;?>">Contato</a>
 
             <div class="social-icons">
-
-                <a href="#" aria-label="Facebook">
-                    <i class="fa-brands fa-facebook-f"></i>
-                </a>
-
-                <a href="#" aria-label="Instagram">
-                    <i class="fa-brands fa-instagram"></i>
-                </a>
-
-                <a href="#" aria-label="Twitter">
-                    <i class="fa-brands fa-x-twitter"></i>
-                </a>
-
-                <a href="#" aria-label="YouTube">
-                    <i class="fa-brands fa-youtube"></i>
-                </a>
-
+                <a href="https://www.facebook.com" target="_blank" rel="noopener noreferrer" aria-label="Facebook"><i class="fa-brands fa-facebook-f"></i></a>
+                <a href="https://www.instagram.com" target="_blank" rel="noopener noreferrer" aria-label="Instagram"><i class="fa-brands fa-instagram"></i></a>
+                <a href="https://www.twitter.com" target="_blank" rel="noopener noreferrer" aria-label="Twitter"><i class="fa-brands fa-x-twitter"></i></a>
+                <a href="https://www.youtube.com" target="_blank" rel="noopener noreferrer" aria-label="YouTube"><i class="fa-brands fa-youtube"></i></a>
             </div>
 
         </div>
@@ -302,6 +289,32 @@ $isAdmin = $userCargo === 'administrador';
 
     </section>
 
+    <!-- MAIS ACESSADAS -->
+    <?php $maisAcessadas = array_slice(array_merge($hero, $nacional, $internacional), 0, 5); ?>
+    <?php if (!empty($maisAcessadas)): ?>
+    <section class="secao mais-acessadas">
+        <div class="mais-acessadas-header">
+            <h2>Mais acessadas</h2>
+            <span>Leituras em destaque no Jornal Atlas</span>
+        </div>
+        <div class="mais-acessadas-lista">
+            <?php foreach ($maisAcessadas as $posicao => $noticia): ?>
+            <a href="<?= url('/noticia/' . $noticia->getId()) ;?>" class="mais-acessada-item">
+                <span class="mais-acessada-rank"><?= str_pad((string) ($posicao + 1), 2, '0', STR_PAD_LEFT) ;?></span>
+                <div class="mais-acessada-img">
+                    <img src="<?= asset('img/' . $noticia->getImagem()) ;?>" alt="<?= e($noticia->getTitulo()) ;?>">
+                </div>
+                <div class="mais-acessada-info">
+                    <span><?= e($noticia->getCategoria()) ;?></span>
+                    <h3><?= e($noticia->getTitulo()) ;?></h3>
+                </div>
+                <i class="fa-solid fa-arrow-right"></i>
+            </a>
+            <?php endforeach; ?>
+        </div>
+    </section>
+    <?php endif; ?>
+
     <!-- FOOTER -->
 
     <footer>
@@ -315,10 +328,10 @@ $isAdmin = $userCargo === 'administrador';
                     Informação com profundidade, contexto e credibilidade para entender o mundo.
                 </p>
                 <div class="footer-social">
-                    <a href="#" aria-label="Facebook"><i class="fa-brands fa-facebook-f"></i></a>
-                    <a href="#" aria-label="Instagram"><i class="fa-brands fa-instagram"></i></a>
-                    <a href="#" aria-label="Twitter"><i class="fa-brands fa-x-twitter"></i></a>
-                    <a href="#" aria-label="YouTube"><i class="fa-brands fa-youtube"></i></a>
+                    <a href="https://www.facebook.com" target="_blank" rel="noopener noreferrer" aria-label="Facebook"><i class="fa-brands fa-facebook-f"></i></a>
+                    <a href="https://www.instagram.com" target="_blank" rel="noopener noreferrer" aria-label="Instagram"><i class="fa-brands fa-instagram"></i></a>
+                    <a href="https://www.twitter.com" target="_blank" rel="noopener noreferrer" aria-label="Twitter"><i class="fa-brands fa-x-twitter"></i></a>
+                    <a href="https://www.youtube.com" target="_blank" rel="noopener noreferrer" aria-label="YouTube"><i class="fa-brands fa-youtube"></i></a>
                 </div>
             </div>
 
@@ -338,12 +351,12 @@ $isAdmin = $userCargo === 'administrador';
             <div class="footer-links-col">
                 <h4>INSTITUCIONAL</h4>
                 <div class="links-grid">
-                    <a class="footer-link-item" href="#">Sobre nós</a>
-                    <a class="footer-link-item" href="#">Anuncie</a>
-                    <a class="footer-link-item" href="#">Código de ética</a>
-                    <a class="footer-link-item" href="#">Fale conosco</a>
-                    <a class="footer-link-item" href="#">Trabalhe conosco</a>
-                    <a class="footer-link-item" href="#">Termos de uso</a>
+                    <a class="footer-link-item" href="<?= url('/sobre') ;?>">Sobre nós</a>
+                    <a class="footer-link-item" href="<?= url('/anuncie') ;?>">Anuncie</a>
+                    <a class="footer-link-item" href="<?= url('/codigo-de-etica') ;?>">Código de ética</a>
+                    <a class="footer-link-item" href="<?= url('/contato') ;?>">Fale conosco</a>
+                    <a class="footer-link-item" href="<?= url('/trabalhe-conosco') ;?>">Trabalhe conosco</a>
+                    <a class="footer-link-item" href="<?= url('/termos-de-uso') ;?>">Termos de uso</a>
                 </div>
             </div>
 

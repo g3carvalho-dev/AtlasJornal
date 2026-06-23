@@ -61,5 +61,6 @@
             </div>
         <?php endif; ?>
     </section>
+    <script src="<?= asset('js/script.js') ;?>"></script>
 </body>
 </html>

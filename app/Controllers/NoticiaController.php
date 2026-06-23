@@ -87,6 +87,8 @@ class NoticiaController
                     $noticia->setImagem($nomeImagem);
                 }
             }
+        } elseif (isset($_POST['imagem_atual']) && $_POST['imagem_atual'] === '') {
+            $noticia->setImagem(null);
         }
 
         $statusAtual = $noticia->getStatus();

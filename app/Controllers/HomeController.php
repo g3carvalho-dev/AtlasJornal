@@ -58,4 +58,27 @@ class HomeController
 
         require __DIR__ . '/../Views/home/busca.php';
     }
+
+    public function sobre(): void
+    {
+        require __DIR__ . '/../Views/home/sobre.php';
+    }
+
+    public function anuncie(): void
+    {
+        $paginaTipo = 'anuncie';
+        require __DIR__ . '/../Views/home/institucional.php';
+    }
+
+    public function contato(): void
+    {
+        $paginaTipo = 'contato';
+        require __DIR__ . '/../Views/home/institucional.php';
+    }
+
+    public function institucional(string $slug): void
+    {
+        $paginaSlug = $slug;
+        require __DIR__ . '/../Views/home/institucional-pagina.php';
+    }
 }
