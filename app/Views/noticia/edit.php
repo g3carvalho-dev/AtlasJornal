@@ -196,24 +196,39 @@ unset($_SESSION['errors']);
     <script src="https://cdn.ckeditor.com/ckeditor5/41.4.2/classic/ckeditor.js"></script>
     <script>
     let ckEditorInstance = null;
-    ClassicEditor
-        .create(document.querySelector('#conteudo-campo'), {
-            toolbar: [
-                'heading', '|',
-                'bold', 'italic', 'link', 'bulletedList', 'numberedList', '|',
-                'outdent', 'indent', '|',
-                'blockQuote', 'insertTable', 'horizontalLine', '|',
-                'undo', 'redo'
-            ],
-            language: 'pt-br',
-            placeholder: 'Escreva o conteúdo da notícia aqui...'
-        })
-        .then(editor => {
-            ckEditorInstance = editor;
-        })
-        .catch(error => {
-            console.error('Erro ao inicializar CKEditor:', error);
-        });
+    var conteudoCampo = document.querySelector('#conteudo-campo');
+
+    function ativarFallbackTextarea() {
+        if (conteudoCampo) {
+            conteudoCampo.style.display = '';
+            conteudoCampo.removeAttribute('required');
+        }
+    }
+
+    if (typeof ClassicEditor !== 'undefined') {
+        ClassicEditor
+            .create(conteudoCampo, {
+                toolbar: [
+                    'heading', '|',
+                    'bold', 'italic', 'link', 'bulletedList', 'numberedList', '|',
+                    'outdent', 'indent', '|',
+                    'blockQuote', 'insertTable', 'horizontalLine', '|',
+                    'undo', 'redo'
+                ],
+                language: 'pt-br',
+                placeholder: 'Escreva o conteúdo da notícia aqui...'
+            })
+            .then(editor => {
+                ckEditorInstance = editor;
+                if (conteudoCampo) conteudoCampo.removeAttribute('required');
+            })
+            .catch(error => {
+                console.error('Erro ao inicializar CKEditor:', error);
+                ativarFallbackTextarea();
+            });
+    } else {
+        ativarFallbackTextarea();
+    }
 
     const textarea = document.querySelector('textarea[name="resumo"]');
     const contador = document.getElementById('contadorResumo');
@@ -259,11 +274,21 @@ unset($_SESSION['errors']);
     }
     </script>
     <script>
-    document.querySelector('form[enctype]').addEventListener('submit', function() {
+    document.querySelector('form[enctype]').addEventListener('submit', function(e) {
         if (ckEditorInstance) {
             document.getElementById('conteudo-campo').value = ckEditorInstance.getData();
         }
-        const btns = this.querySelectorAll('button[type="submit"]');
+
+        var clickedBtn = e.submitter;
+        if (clickedBtn && clickedBtn.name) {
+            var hidden = document.createElement('input');
+            hidden.type = 'hidden';
+            hidden.name = clickedBtn.name;
+            hidden.value = clickedBtn.value;
+            this.appendChild(hidden);
+        }
+
+        var btns = this.querySelectorAll('button[type="submit"]');
         btns.forEach(function(btn) { btn.disabled = true; });
     });
     </script>

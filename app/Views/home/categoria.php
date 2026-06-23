@@ -3,13 +3,21 @@ if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
 
+use App\Repositories\RevisaoRepository;
+use App\Repositories\SolicitacaoCargoRepository;
+use App\Repositories\NoticiaRepository;
+
 $userLogado = isset($_SESSION['usuario_logado']) && $_SESSION['usuario_logado'] === true;
 $userCargo = $_SESSION['usuario_cargo'] ?? 'leitor';
 $userNome = $_SESSION['usuario_nome'] ?? '';
 $userFoto = $_SESSION['usuario_foto'] ?? 'img/avatar_admin.png';
 $isRedator = in_array($userCargo, ['redator', 'revisor', 'administrador']);
 $isRevisor = in_array($userCargo, ['revisor', 'administrador']);
-$isAdmin = $userCargo === 'administrador';
+ $isAdmin = $userCargo === 'administrador';
+
+$pendentesRevisao = $isRevisor ? RevisaoRepository::pendentesCount() : 0;
+$meusPendentes = $isRedator ? NoticiaRepository::countByRedatorPending($_SESSION['usuario_id'] ?? 0) : 0;
+$solicitacoesPendentesCount = $isAdmin ? count(SolicitacaoCargoRepository::pending()) : 0;
 ?>
 <!DOCTYPE html>
 <html lang="pt-BR">
@@ -109,7 +117,7 @@ foreach ($categoriasNav as $label => $valor):
             <a href="<?= url('/revisao') ;?>" class="admin-btn-box">
                 <i class="fa-solid fa-list-check"></i>
                 <div>
-                    <strong>Revisar pendentes <span class="admin-badge">0</span></strong>
+                    <strong>Revisar pendentes <span class="admin-badge"><?= $pendentesRevisao ;?></span></strong>
                     <span>Itens aguardando revisão</span>
                 </div>
             </a>
@@ -127,7 +135,7 @@ foreach ($categoriasNav as $label => $valor):
             <a href="<?= url('/solicitacoes') ;?>" class="admin-btn-box">
                 <i class="fa-solid fa-user-gear"></i>
                 <div>
-                    <strong>Solicitações de cargo <span class="admin-badge badge-amber">0</span></strong>
+                    <strong>Solicitações de cargo <span class="admin-badge badge-amber"><?= $solicitacoesPendentesCount ;?></span></strong>
                     <span>Analisar pedidos de colaboradores</span>
                 </div>
             </a>

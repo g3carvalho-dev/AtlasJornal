@@ -361,7 +361,7 @@ unset($_SESSION['sucesso']);
     ];
     const meses = ["janeiro", "fevereiro", "março", "abril", "maio", "junho", "julho", "agosto", "setembro", "outubro",
         "novembro", "dezembro"
-    ];;
+    ];
     document.getElementById("data-atual").textContent =
         `${diasSemana[data.getDay()]}, ${data.getDate()} de ${meses[data.getMonth()]} de ${data.getFullYear()}`;
 

@@ -224,12 +224,12 @@ $relacionadasTotal = count($relacionadasPaginas);
             <div class="footer-links-col">
                 <h4>NAVEGAÇÃO</h4>
                 <div class="links-grid">
-                    <a class="footer-link-item" href="<?= url('/categoria/' . urlencode('Política')) ;?>">Política</a>
-                    <a class="footer-link-item" href="<?= url('/categoria/' . urlencode('Economia')) ;?>">Economia</a>
-                    <a class="footer-link-item" href="<?= url('/categoria/' . urlencode('Esportes')) ;?>">Esportes</a>
-                    <a class="footer-link-item" href="<?= url('/categoria/' . urlencode('Cultura')) ;?>">Cultura</a>
-                    <a class="footer-link-item" href="<?= url('/categoria/' . urlencode('Mundo')) ;?>">Mundo</a>
-                    <a class="footer-link-item" href="<?= url('/categoria/' . urlencode('Tecnologia')) ;?>">Tecnologia</a>
+                    <a class="footer-link-item" href="<?= url('/categoria/' . urlencode('POLÍTICA')) ;?>">Política</a>
+                    <a class="footer-link-item" href="<?= url('/categoria/' . urlencode('ECONOMIA')) ;?>">Economia</a>
+                    <a class="footer-link-item" href="<?= url('/categoria/' . urlencode('ESPORTES')) ;?>">Esportes</a>
+                    <a class="footer-link-item" href="<?= url('/categoria/' . urlencode('CULTURA')) ;?>">Cultura</a>
+                    <a class="footer-link-item" href="<?= url('/categoria/' . urlencode('MUNDO')) ;?>">Mundo</a>
+                    <a class="footer-link-item" href="<?= url('/categoria/' . urlencode('TECNOLOGIA')) ;?>">Tecnologia</a>
                 </div>
             </div>
 

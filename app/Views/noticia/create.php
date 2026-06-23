@@ -69,9 +69,11 @@
             <li><a href="<?= url('/categoria/' . urlencode('POLÍTICA')) ;?>">Política</a></li>
             <li><a href="<?= url('/categoria/' . urlencode('TECNOLOGIA')) ;?>">Tecnologia</a></li>
             <li><a href="<?= url('/categoria/' . urlencode('ECONOMIA')) ;?>">Economia</a></li>
+            <li><a href="<?= url('/categoria/' . urlencode('SAÚDE')) ;?>">Saúde</a></li>
             <li><a href="<?= url('/categoria/' . urlencode('ESPORTES')) ;?>">Esportes</a></li>
             <li><a href="<?= url('/categoria/' . urlencode('MUNDO')) ;?>">Mundo</a></li>
             <li><a href="<?= url('/categoria/' . urlencode('CULTURA')) ;?>">Cultura</a></li>
+            <li><a href="<?= url('/categoria/' . urlencode('CIÊNCIA')) ;?>">Ciência</a></li>
         </ul>
     </nav>
 
@@ -376,29 +378,44 @@ foreach ($secs as $val => $label):
 
     // CKEditor 5 no campo de conteúdo
     let ckEditorInstance = null;
-    ClassicEditor
-        .create(document.querySelector('#conteudo-campo'), {
-            toolbar: [
-                'heading', '|',
-                'bold', 'italic', 'link', 'bulletedList', 'numberedList', '|',
-                'outdent', 'indent', '|',
-                'blockQuote', 'insertTable', 'horizontalLine', '|',
-                'undo', 'redo'
-            ],
-            language: 'pt-br',
-            placeholder: 'Comece a escrever sua notícia aqui...'
-        })
-        .then(editor => {
-            ckEditorInstance = editor;
-            updateContadorPalavras();
-            editor.model.document.on('change', () => {
+    var conteudoCampo = document.querySelector('#conteudo-campo');
+
+    function ativarFallbackTextarea() {
+        if (conteudoCampo) {
+            conteudoCampo.style.display = '';
+            conteudoCampo.removeAttribute('required');
+        }
+    }
+
+    if (typeof ClassicEditor !== 'undefined') {
+        ClassicEditor
+            .create(conteudoCampo, {
+                toolbar: [
+                    'heading', '|',
+                    'bold', 'italic', 'link', 'bulletedList', 'numberedList', '|',
+                    'outdent', 'indent', '|',
+                    'blockQuote', 'insertTable', 'horizontalLine', '|',
+                    'undo', 'redo'
+                ],
+                language: 'pt-br',
+                placeholder: 'Comece a escrever sua notícia aqui...'
+            })
+            .then(editor => {
+                ckEditorInstance = editor;
+                if (conteudoCampo) conteudoCampo.removeAttribute('required');
                 updateContadorPalavras();
-                updateChecklist();
+                editor.model.document.on('change', () => {
+                    updateContadorPalavras();
+                    updateChecklist();
+                });
+            })
+            .catch(error => {
+                console.error('Erro ao inicializar CKEditor:', error);
+                ativarFallbackTextarea();
             });
-        })
-        .catch(error => {
-            console.error('Erro ao inicializar CKEditor:', error);
-        });
+    } else {
+        ativarFallbackTextarea();
+    }
 
     // Contador de palavras do conteúdo
     const palavrasContador = document.getElementById('palavras-contador');
@@ -496,11 +513,21 @@ foreach ($secs as $val => $label):
     updateContadorPalavras();
 
     // Prevenir duplo envio e sincronizar CKEditor
-    document.getElementById('form-noticia').addEventListener('submit', function() {
+    document.getElementById('form-noticia').addEventListener('submit', function(e) {
         if (ckEditorInstance) {
             document.getElementById('conteudo-campo').value = ckEditorInstance.getData();
         }
-        const btns = this.querySelectorAll('button[type="submit"]');
+
+        var clickedBtn = e.submitter;
+        if (clickedBtn && clickedBtn.name) {
+            var hidden = document.createElement('input');
+            hidden.type = 'hidden';
+            hidden.name = clickedBtn.name;
+            hidden.value = clickedBtn.value;
+            this.appendChild(hidden);
+        }
+
+        var btns = this.querySelectorAll('button[type="submit"]');
         btns.forEach(function(btn) {
             btn.disabled = true;
         });

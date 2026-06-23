@@ -542,7 +542,7 @@ nav a.active{
     background: #78909c;
 }
 
-.card-status-analise {
+.card-status-em_analise {
     background: #e65100;
 }
 
@@ -1173,18 +1173,6 @@ footer {
     margin: 0 6px;
 }
 
-.alert-erro {
-    background: #fff3f3;
-    border: 1px solid #e74c3c;
-    border-radius: 8px;
-    padding: 15px 20px;
-    margin-bottom: 20px;
-    color: #c0392b;
-    display: flex;
-    align-items: flex-start;
-    gap: 10px;
-}
-
 .alert-erro i {
     margin-top: 3px;
     font-size: 18px;
@@ -1563,10 +1551,11 @@ body.tema-escuro .ck-editor .ck-tooltip {
     border: 1px solid #ffe0b2;
 }
 
-.status-em-analise {
-    background: #e3f2fd;
-    color: #1565c0;
-    border: 1px solid #bbdefb;
+.status-em-analise,
+.status-em_analise {
+    background: #fff3e0;
+    color: #e65100;
+    border: 1px solid #ffe0b2;
 }
 
 .status-aprovada {
@@ -2700,11 +2689,6 @@ body.tema-escuro .ck-editor .ck-tooltip {
     letter-spacing: 0.5px;
 }
 
-.status-em-analise {
-    background: #fff3e0;
-    color: #e65100;
-}
-
 .revisao-vazio {
     text-align: center;
     padding: 60px 20px;
@@ -2927,21 +2911,6 @@ body.tema-escuro .ck-editor .ck-tooltip {
     max-width: 1400px;
     margin: 0 auto;
     padding: 30px 5% 60px;
-}
-
-.breadcrumb {
-    font-size: 13px;
-    color: #999;
-    margin-bottom: 16px;
-}
-
-.breadcrumb a {
-    color: #777;
-    text-decoration: none;
-}
-
-.breadcrumb a:hover {
-    color: var(--dourado);
 }
 
 .breadcrumb .atual {
@@ -4048,19 +4017,6 @@ body.tema-escuro .ck-editor .ck-tooltip {
     color: #888;
 }
 
-.alert-sucesso {
-    background: #e8f5e9;
-    color: #2e7d32;
-    border: 1px solid #a5d6a7;
-    border-radius: 8px;
-    padding: 12px 16px;
-    margin-bottom: 20px;
-    font-size: 14px;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-}
-
 .alert-erro {
     background: #fce4ec;
     color: #c62828;
@@ -4377,7 +4333,6 @@ body.tema-escuro .ck-editor .ck-tooltip {
 }
 
 .status-rascunho { background: #f5f5f5; color: #888; }
-.status-em_analise { background: #fff3e0; color: #e65100; }
 .status-aprovada { background: #e8f5e9; color: #2e7d32; }
 .status-arquivada { background: #f5f5f5; color: #999; }
 .status-rejeitada { background: #fce4ec; color: #c62828; }
@@ -5121,6 +5076,14 @@ body.tema-escuro .section-carousel-btn:hover {
     background-color: rgba(228,181,113,0.1);
 }
 
+body.tema-escuro .section-dot {
+    background-color: #555;
+}
+
+body.tema-escuro .section-dot.active {
+    background-color: var(--dourado) !important;
+}
+
 body.tema-escuro .form-input,
 body.tema-escuro .form-select,
 body.tema-escuro .form-textarea,
@@ -5324,9 +5287,9 @@ body.tema-escuro .sidebar-campo .status-badge.status-rascunho {
 
 body.tema-escuro .status-badge-status.status-em-analise,
 body.tema-escuro .sidebar-campo .status-badge.status-analise {
-    background: #e3f2fd;
-    color: #1565c0 !important;
-    border: 1px solid #bbdefb;
+    background: #3a2a10;
+    color: #f5d78e !important;
+    border: 1px solid #5a4a20;
 }
 
 body.tema-escuro .status-badge-status.status-aprovada,

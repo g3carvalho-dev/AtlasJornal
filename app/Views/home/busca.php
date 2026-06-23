@@ -157,7 +157,7 @@ $userFoto = $_SESSION['usuario_foto'] ?? 'img/avatar_admin.png';
             <div class="footer-links-col">
                 <h4>NAVEGAÇÃO</h4>
                 <div class="links-grid">
-                    <a class="footer-link-item" href="<?= url('/categoria/' . urlencode('POLITICA')) ;?>">Política</a>
+                    <a class="footer-link-item" href="<?= url('/categoria/' . urlencode('POLÍTICA')) ;?>">Política</a>
                     <a class="footer-link-item" href="<?= url('/categoria/' . urlencode('ECONOMIA')) ;?>">Economia</a>
                     <a class="footer-link-item" href="<?= url('/categoria/' . urlencode('ESPORTES')) ;?>">Esportes</a>
                     <a class="footer-link-item" href="<?= url('/categoria/' . urlencode('CULTURA')) ;?>">Cultura</a>
